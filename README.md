@@ -9,11 +9,16 @@ Tested on Python 3.10.9
 
 1. Set up virtual environment (optional)
 
-Linux/WSL:
-```
-virtualenv venv
-source venv/bin/activate
-```
+Create the virtual environment with `virtualenv venv`
+
+Tnen activate it:
+
+On Linux: `source venv/bin/activate`
+
+On Windows using Command Prompt: `path\to\venv\Scripts\activate.bat`
+
+On Windows using PowerShell: `path\to\venv\Scripts\Activate.ps1`
+
 2. Install dependencies
 
 ```
