@@ -9,7 +9,7 @@ Tested on Python 3.10.9
 
 1. Set up virtual environment (optional)
 
-Linux:
+Linux/WSL:
 ```
 virtualenv venv
 source venv/bin/activate
