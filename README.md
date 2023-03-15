@@ -9,6 +9,8 @@ Tested on Python 3.10.9
 
 1. (Optional) Set up virtual environment for Python
 
+    `cd backend`
+
     Create the virtual environment with `virtualenv venv`
 
     Then activate it:
@@ -24,6 +26,7 @@ Tested on Python 3.10.9
 ```
 pip install flask
 pip install python-dotenv
+pip install pymongo
 ```
 3. Nodejs and dependencies
 
