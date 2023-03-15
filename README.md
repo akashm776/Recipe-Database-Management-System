@@ -9,15 +9,15 @@ Tested on Python 3.10.9
 
 1. (Optional) Set up virtual environment for Python
 
-Create the virtual environment with `virtualenv venv`
+    Create the virtual environment with `virtualenv venv`
 
-Tnen activate it:
+    Then activate it:
 
-On Linux: `source venv/bin/activate`
+    On Linux: `source venv/bin/activate`
 
-On Windows using Command Prompt: `path\to\venv\Scripts\activate.bat`
+    On Windows using Command Prompt: `path\to\venv\Scripts\activate.bat`
 
-On Windows using PowerShell: `path\to\venv\Scripts\Activate.ps1`
+    On Windows using PowerShell: `path\to\venv\Scripts\Activate.ps1`
 
 2. Install dependencies
  
@@ -49,7 +49,7 @@ You can also run it as daemon in the commandline using `mongod`
 3. `python -m flask run` to launch the backend
 4. Open another terminal
 5. `cd frontend`
-6. `npm start
+6. `npm start`
 7. Navigate to "http://localhost:3000" in your web browser
 
 ## Authors and acknowledgment
