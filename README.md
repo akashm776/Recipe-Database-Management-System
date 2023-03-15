@@ -24,6 +24,7 @@ Tested on Python 3.10.9
 ```
 pip install flask
 pip install python-dotenv
+pip install pymongo
 ```
 3. Nodejs and dependencies
 
