@@ -9,6 +9,8 @@ Tested on Python 3.10.9
 
 1. (Optional) Set up virtual environment for Python
 
+    `cd backend`
+
     Create the virtual environment with `virtualenv venv`
 
     Then activate it:
