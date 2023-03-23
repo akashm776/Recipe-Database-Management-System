@@ -34,7 +34,7 @@ def index():
     name = data["name"]
     results = search_by_name(name)
     response_body = {
-        "message": f"Recieved POST: {results}"
+        "results": str(results).replace("'",'"') # create array in JSON format
     }
     return response_body
 
