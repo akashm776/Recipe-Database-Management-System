@@ -9,16 +9,13 @@ Tested on Python 3.10.9
 
 1. (Optional) Set up virtual environment for Python
 
-    `cd backend`
+    `cd backend` 
 
     Create the virtual environment with `virtualenv venv`
 
-    Then activate it:
-
-    On Linux: `source venv/bin/activate`
-
-    On Windows using Command Prompt: `path\to\venv\Scripts\activate.bat`
-
+    Then activate it:\
+    On Linux: `source venv/bin/activate`\
+    On Windows using Command Prompt: `path\to\venv\Scripts\activate.bat`\
     On Windows using PowerShell: `path\to\venv\Scripts\Activate.ps1`
 
 2. Install dependencies
