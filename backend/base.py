@@ -18,24 +18,36 @@ recipes.insert_one({'name':'Meatballs',
                 'time_mins':45,
                 'energy':'moderate',
                 'type':'dinner',
-                'date_added': datetime.datetime(2023, 3, 23, 17, 15, 46), 
-                'views': 0,
                 })
 
 recipes.insert_one({'name':'Veggieballs',
                 'time_mins':20,
                 'energy':'jules',
                 'type':'side',
-                'date_added': datetime.datetime(2023, 3, 23, 17, 16, 52),
-                'views': 0,
                 })
 
 recipes.insert_one({'name':'Meat Pie',
                 'time_mins':90,
                 'energy':'big dick',
                 'type':'dinner',
-                'date_added': datetime.datetime(2023, 3, 23, 17, 17, 6),
-                'views': 0,
+                })
+
+recipes.insert_one({'name':'Brownies',
+                'time_mins':45,
+                'energy':'moderate',
+                'type':'sweets'
+                })
+
+recipes.insert_one({'name':'Snickerdoodles',
+                'time_mins':20,
+                'energy':'moderate',
+                'type':'sweets'
+                })
+
+recipes.insert_one({'name':'Slow Cooker Mashed Potatoes',
+                'time_mins':240,
+                'energy':'moderate',
+                'type':'side dish'
                 })
 
 @app.route("/query", methods=['POST'])
