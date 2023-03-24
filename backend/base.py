@@ -1,6 +1,10 @@
 from flask import Flask, request
 from pymongo import MongoClient
+from pymongo.collation import Collation
+from pymongo import ReturnDocument
 import re
+import pymongo
+import datetime
 
 app = Flask(__name__)
 
@@ -14,18 +18,24 @@ recipes.insert_one({'name':'Meatballs',
                 'time_mins':45,
                 'energy':'moderate',
                 'type':'dinner',
+                'date_added': datetime.datetime(2023, 3, 23, 17, 15, 46), 
+                'views': 0,
                 })
 
 recipes.insert_one({'name':'Veggieballs',
                 'time_mins':20,
                 'energy':'jules',
                 'type':'side',
+                'date_added': datetime.datetime(2023, 3, 23, 17, 16, 52),
+                'views': 0,
                 })
 
 recipes.insert_one({'name':'Meat Pie',
                 'time_mins':90,
                 'energy':'big dick',
                 'type':'dinner',
+                'date_added': datetime.datetime(2023, 3, 23, 17, 17, 6),
+                'views': 0,
                 })
 
 @app.route("/query", methods=['POST'])
@@ -43,4 +53,15 @@ def search_by_name(query):
     regx = re.compile(".*" + re.escape(query), re.IGNORECASE)
     for entry in recipes.find({"name": regx}):
         list_of_matches.append(entry["name"])
+    recipes.update_many({"name": regx},{'$inc': {'views': 1}})
     return list_of_matches
+
+def filter_by_name():
+    return list(recipes.find().sort("name").collation(Collation(locale= "en", caseLevel=True))) 
+    # Collation ensures that for example sequence AbBA is sorted AaBb and not ABab
+
+def filter_by_date_added():
+    return list(recipes.find().sort("date_added"))
+
+def filter_by_views():
+    return list(recipes.find().sort("views", pymongo.DESCENDING))
