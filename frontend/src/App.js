@@ -29,9 +29,11 @@ function ResultList({ results }) {
 
 function App() {
   const [searchBarText, setSearchBarText] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchedFor, setSearchedFor] = useState("");
+  const [results, setResults] = useState([]);
 
   function search(val) {
+    setSearchedFor(val)
     axios({
       method: 'POST',
       url: 'query',
@@ -40,7 +42,7 @@ function App() {
       }
     }).then((response) => {
        console.log("received: "+JSON.parse(response.data.results));
-       setSearchResults(JSON.parse(response.data.results));
+       setResults(JSON.parse(response.data.results));
     })
   }
 
@@ -58,8 +60,8 @@ function App() {
     <div className="App">
       <TextField class="searchbar" label="Search" onChange={handleChange} onKeyDown={handleKeyDown} variant="outlined" autoFocus/>
       <Button size='' onClick={()=>{search(searchBarText)}} variant='contained'>Search</Button>
-      <p>Search results for: <b>{searchBarText}</b></p>
-      <ResultList results={searchResults}/>
+      <p>Search results for: <b>{searchedFor}</b></p>
+      <ResultList results={results}/>
     </div>
   );
 }
