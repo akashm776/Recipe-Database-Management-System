@@ -1,8 +1,9 @@
 import {useState} from 'react';
 import axios from 'axios';
 import './App.css';
-import TextField from '@mui/material/TextField'
+import TextField from '@mui/material/TextField';
 import { Button, Card, CardContent, CardHeader, CardMedia, MenuItem, Select, Typography } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 function ResultList({ results }) {
   return (
@@ -60,16 +61,27 @@ function App() {
   
   return (
     <div className="App">
-      <TextField class="searchbar" label="Search" onChange={handleChange} onKeyDown={handleKeyDown} variant="outlined" autoFocus/>
-      <Button size='' onClick={()=>{search(searchBarText)}} variant='contained'>Search</Button>
-      <Select 
-        label="Sort by"
-        value={sortBy}
-        onChange={(event)=>setSortBy(event.target.value)}>
-        <MenuItem value="alphabetical">Alphabetical</MenuItem>
-        <MenuItem value="date">Date Added</MenuItem>
-        <MenuItem value="views">Views</MenuItem>
-      </Select>
+      <div class="searchRow" style={{display:'flex', margin:'12px'}}>
+        <TextField 
+          class="searchbar" label="Search" 
+          onChange={handleChange} onKeyDown={handleKeyDown} 
+          style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus 
+          InputLabelProps={{shrink: false}}/>
+        <Button 
+          class='searchButton' 
+          onClick={()=>{search(searchBarText)}} 
+          style={{flex:'none', marginRight:'4px'}} variant='contained' >
+            <SearchIcon />
+        </Button>
+        <Select 
+          class='sortSelect' label="Sort by"
+          value={sortBy}
+          onChange={(event)=>setSortBy(event.target.value)} >
+            <MenuItem value="alphabetical">Alphabetical</MenuItem>
+            <MenuItem value="date">Date Added</MenuItem>
+            <MenuItem value="views">Views</MenuItem>
+        </Select>
+      </div>
       <p>Search results for: <b>{searchedFor}</b></p>
       <ResultList results={results}/>
     </div>
