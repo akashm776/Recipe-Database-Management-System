@@ -65,8 +65,7 @@ function App() {
         <TextField 
           class="searchbar" label="Search" 
           onChange={handleChange} onKeyDown={handleKeyDown} 
-          style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus 
-          InputLabelProps={{shrink: false}}/>
+          style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus />
         <Button 
           class='searchButton' 
           onClick={()=>{search(searchBarText)}} 
