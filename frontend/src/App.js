@@ -2,7 +2,7 @@ import {useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import TextField from '@mui/material/TextField'
-import { Button, Card, CardContent, CardHeader, CardMedia, Typography } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, CardMedia, MenuItem, Select, Typography } from '@mui/material';
 
 function ResultList({ results }) {
   return (
@@ -29,6 +29,7 @@ function ResultList({ results }) {
 
 function App() {
   const [searchBarText, setSearchBarText] = useState("");
+  const [sortBy, setSortBy] = useState("alphabetical"); // default value
   const [searchedFor, setSearchedFor] = useState("");
   const [results, setResults] = useState([]);
 
@@ -38,7 +39,8 @@ function App() {
       method: 'POST',
       url: 'query',
       data: {
-        name: val
+        name: val,
+        sort: sortBy
       }
     }).then((response) => {
        console.log("received: "+JSON.parse(response.data.results));
@@ -60,6 +62,14 @@ function App() {
     <div className="App">
       <TextField class="searchbar" label="Search" onChange={handleChange} onKeyDown={handleKeyDown} variant="outlined" autoFocus/>
       <Button size='' onClick={()=>{search(searchBarText)}} variant='contained'>Search</Button>
+      <Select 
+        label="Sort by"
+        value={sortBy}
+        onChange={(event)=>setSortBy(event.target.value)}>
+        <MenuItem value="alphabetical">Alphabetical</MenuItem>
+        <MenuItem value="date">Date Added</MenuItem>
+        <MenuItem value="views">Views</MenuItem>
+      </Select>
       <p>Search results for: <b>{searchedFor}</b></p>
       <ResultList results={results}/>
     </div>
