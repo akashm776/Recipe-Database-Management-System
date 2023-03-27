@@ -2,29 +2,34 @@ import {useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, CardHeader, CardMedia, MenuItem, Select, Typography } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, CardMedia, Grid, MenuItem, Select, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { Container } from '@mui/system';
 
 function ResultList({ results }) {
   return (
-    <div>
-      {results.map((string, index) => {
-        return (
-        <Card key={index} sx={{ minWidth: 200, maxWidth: 300 }} variant='outlined'>
-          <CardHeader title={string}/>
-          <CardMedia 
-            sx={{height:150}}
-            image="/istockphoto-612x612.jpg"
-          />
-          <CardContent>
-            <Typography variant='body2' color='text.secondary'>
-              placeholder text
-            </Typography>
-          </CardContent>
-        </Card>
-        )
-      })}
-    </div>
+    <Container>
+      <Grid container spacing={1} alignItems="center">
+        {results.map((string, index) => {
+          return (
+            <Grid item xs={4}>
+              <Card key={index} sx={{ minWidth: 200, maxWidth: 400 }} variant='outlined'>
+                <CardHeader title={string}/>
+                <CardMedia 
+                  sx={{height:150}}
+                  image="/istockphoto-612x612.jpg"
+                />
+                <CardContent>
+                  <Typography variant='body2' color='text.secondary'>
+                    placeholder text
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          )
+        })}
+      </Grid>
+    </Container>
   )
 }
 
