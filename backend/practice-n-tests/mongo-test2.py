@@ -23,7 +23,7 @@ recipes.insert_one({'name':'Meatballs',
 3) Using your hands, take about 2tbs worth of meat mixture, and form it into a packed ball. Continue this until your bowl is empty and you have an army of uncooked meatballs.
 4) Oil a pan using the olive oil and, over medium heat, give each meatball a couple minutes of cooking on 3 sides. I know they’re spheres and don’t have sides.
 5) Transfer the half-cooked meatballs to a foil-lined baking tray and bake for 20 minutes or until the insides are up to temp.''',
-                'viewcount':1,
+                'views':1,
                 'date_added':datetime.datetime(2023, 3, 26, 6, 36, 48)
                 })
 
@@ -42,7 +42,7 @@ recipes.insert_one({'name':'Brownies',
 6) Fold in the remaining 4oz of chopped chocolate and transfer batter to the prepared 8x8 pan.
 7) Bake for 20-25 minutes- check using the toothpick method
 8) Eat and burn your mouth because you forgot to let them cool''',
-                'viewcount':3,
+                'views':3,
                 'date_added':datetime.datetime.utcnow()
                 })
 
@@ -58,7 +58,7 @@ recipes.insert_one({'name':'Slow Cooker Mashed Potatoes',
 3) Cook on high for 4 hours
 4) Remove the lid and mash the potatoes, mixing in the milk as you go.
 5) Eat''',
-                'viewcount':1,
+                'views':1,
                 'date_added':datetime.datetime(2022, 4, 13, 23, 2, 27)
                 })
 
@@ -75,7 +75,7 @@ recipes.insert_one({'name':'Snickerdoodles',
 4) Combine sugar and cinnamon for the cinnamon sugar coating.
 5) Scoop out dough and roll into a ball. Roll the ball into the cinnamon sugar coating and set onto an ungreased baking sheet 2 inches apart.
 6) Bake for 8-10 minutes''',
-                'viewcount':4,
+                'views':4,
                 'date_added':datetime.datetime(2022, 11, 15, 15, 22, 50)
                 })
 
@@ -90,5 +90,5 @@ def search_by_name(name, sort):
             return list(recipes.find({"name": regx}).sort("views", pymongo.DESCENDING))
     return list(recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
 
-items = search_by_name("e","alphabetical")
+items = search_by_name("e","views")
 print(items)
