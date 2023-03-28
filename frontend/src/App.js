@@ -61,19 +61,19 @@ function App() {
   
   return (
     <div className="App">
-      <div class="searchRow" style={{display:'flex', margin:'12px'}}>
+      <div className="searchRow" style={{display:'flex', margin:'12px'}}>
         <TextField 
-          class="searchbar" label="Search" 
+          className="searchbar" label="Search" 
           onChange={handleChange} onKeyDown={handleKeyDown} 
           style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus />
         <Button 
-          class='searchButton' 
+          className='searchButton' 
           onClick={()=>{search(searchBarText)}} 
           style={{flex:'none', marginRight:'4px'}} variant='contained' >
             <SearchIcon />
         </Button>
         <Select 
-          class='sortSelect' label="Sort by"
+          className='sortSelect' label="Sort by"
           value={sortBy}
           onChange={(event)=>setSortBy(event.target.value)} >
             <MenuItem value="alphabetical">Alphabetical</MenuItem>
