@@ -39,13 +39,13 @@ function App() {
   const [searchedFor, setSearchedFor] = useState("");
   const [results, setResults] = useState([]);
 
-  function search(val) {
-    setSearchedFor(val)
+  function search(recipeName) {
+    setSearchedFor(recipeName)
     axios({
       method: 'POST',
       url: 'query',
       data: {
-        name: val,
+        name: recipeName,
         sort: sortBy
       }
     }).then((response) => {
@@ -65,6 +65,11 @@ function App() {
       search(searchBarText);
     }
   }
+
+  function handleSortByChange(event) {
+    setSortBy(event.target.value);
+    search(searchedFor);
+  }
   
   return (
     <div className="App">
@@ -82,7 +87,7 @@ function App() {
         <Select 
           className='sortSelect' label="Sort by"
           value={sortBy}
-          onChange={(event)=>setSortBy(event.target.value)} >
+          onChange={handleSortByChange} >
             <MenuItem value="alphabetical">Alphabetical</MenuItem>
             <MenuItem value="date">Date Added</MenuItem>
             <MenuItem value="views">Views</MenuItem>
