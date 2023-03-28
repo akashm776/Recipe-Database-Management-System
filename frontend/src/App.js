@@ -8,10 +8,10 @@ import SearchIcon from '@mui/icons-material/Search';
 function ResultList({ results }) {
   return (
     <div>
-      {results.map((string, index) => {
-        return (
+      {results.map((recipe, index) => {
+        return ( 
         <Card key={index} sx={{ minWidth: 200, maxWidth: 300 }} variant='outlined'>
-          <CardHeader title={string}/>
+          <CardHeader title={recipe.name}/>
           <CardMedia 
             sx={{height:150}}
             image="/istockphoto-612x612.jpg"
@@ -44,8 +44,10 @@ function App() {
         sort: sortBy
       }
     }).then((response) => {
-       console.log("received: "+JSON.parse(response.data.results));
-       setResults(JSON.parse(response.data.results));
+      let res = JSON.parse(response.data.results);
+      console.log("received "+res.length+" recipes");
+      //  console.log("received: "+results[0]['name']);
+      setResults(res);
     })
   }
 

@@ -88,19 +88,33 @@ def index():
     name = data["name"]
     sortBy = data["sort"]
     results = search_by_name(name, sortBy)
+    print(type(results))
     response_body = {
-        "results": str(results).replace("'",'"') # create array in JSON format
+        "results": convert_to_json(results)
     }
+    print()
+    print(response_body['results'])
     return response_body
+
+def convert_to_json(results):
+    """
+    takes a mongodb cursor object and returns a JSON representation
+    """
+    json = list(results)
+    for entry in json:
+        entry.pop("_id") # _id field contains an object, which doesn't readily convert to JSON
+        entry['date_added'] = entry['date_added'].timestamp()
+    json = str(json).replace("'",'"') # using ' instead of " will break it
+    return json
 
 
 def search_by_name(name, sort):
     regx = re.compile(".*" + re.escape(name), re.IGNORECASE)
     match sort:
         case "alphabetical":
-            return list(recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
+            return recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True))
         case "date":
-            return list(recipes.find({"name": regx}).sort("date_added"))
+            return recipes.find({"name": regx}).sort("date_added")
         case "views":
-            return list(recipes.find({"name": regx}).sort("views", pymongo.DESCENDING))
-    return list(recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
+            return recipes.find({"name": regx}).sort("views", pymongo.DESCENDING)
+    return recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True))
