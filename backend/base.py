@@ -108,7 +108,7 @@ def convert_to_json(results):
     return json
 
 
-def search_by_name(name, sort):
+def search_by_name(name, sort, list_of_ingredients = []):
     regx = re.compile(".*" + re.escape(name), re.IGNORECASE)
     match sort:
         case "alphabetical":
@@ -117,4 +117,22 @@ def search_by_name(name, sort):
             return recipes.find({"name": regx}).sort("date_added")
         case "views":
             return recipes.find({"name": regx}).sort("views", pymongo.DESCENDING)
+        case "type":
+            return recipes.find({"name": regx}).sort("type")
+        case "time_mins":
+            return recipes.find({"name": regx}).sort("time_mins")
+        case "energy":
+            return recipes.find({"name": regx}).sort("energy")
+        case "ingredients":
+            i = 0
+            res_set = set()
+            while i < len(list_of_ingredients):
+                ingredient = list_of_ingredients[i]
+                regx1 = re.compile(".*" + re.escape(ingredient), re.IGNORECASE)
+                res_set.add(recipes.find({"ingredients.name": regx1}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
+                i = i + 1
+            return res_set   
     return recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True))
+
+
+
