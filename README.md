@@ -31,6 +31,8 @@ pip install pymongo
 apt install nodejs
 npm install npx
 npm install axios
+npm install @mui/material @emotion/react @emotion/styled
+npm install @mui/icons-material
 ```
 4. Mongodb
 

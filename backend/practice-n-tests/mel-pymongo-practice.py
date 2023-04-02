@@ -2,7 +2,8 @@
 # https://pymongo.readthedocs.io/en/stable/tutorial.html
 
 from pymongo import MongoClient
-
+from pymongo.collation import Collation
+import pymongo
 client = MongoClient('localhost', 27017)
 
 db = client['test_database']
@@ -29,6 +30,7 @@ print(db.list_collection_names())
 print()
 
 import pprint
+
 
 print("find_one():")
 pprint.pprint(posts.find_one())
@@ -64,22 +66,31 @@ print()
 new_posts = [{"author": "Mike",
               "text": "Another post!",
               "tags": ["bulk", "insert"],
-              "date": datetime.datetime(2009, 11, 12, 11, 14)},
+              "date": datetime.datetime(2009, 11, 12, 11, 14),
+              "views": 0,},
+              
              {"author": "Eliot",
               "title": "MongoDB is fun",
               "text": "and pretty easy too!",
-              "date": datetime.datetime(2009, 11, 10, 10, 45)},
+              "date": datetime.datetime(2009, 11, 10, 10, 45),
+              "views": 0,},
              {"author": "Chelsea",
               "title": "I require sustenance",
               "text": "Your firstborn will suffice",
-              "date": datetime.datetime(1999, 12, 31, 23, 59)}]
+              "date": datetime.datetime(1999, 12, 31, 23, 59),
+              "views": 0}]
 result = posts.insert_many(new_posts)
 print(result.inserted_ids)
 print()
 
+print("find")
+pprint.pprint(list(posts.find().sort("date", pymongo.DESCENDING)))
+
+print("Loop")
 for post in posts.find():
     pprint.pprint(post)
 print()
+
 
 for post in posts.find({"author": "Mike"}):
     pprint.pprint(post)
@@ -91,6 +102,8 @@ d = datetime.datetime(2009, 11, 12, 12)
 for post in posts.find({"date": {"$lt": d}}).sort("author"):
     pprint.pprint(post)
 print()
+
+
 
 # regex
 import re
@@ -111,4 +124,7 @@ print("search for posts by authors whose name contains the substring \"el\"")
 regx = re.compile(".*" + re.escape(the_query), re.IGNORECASE)
 for post in posts.find({"author": regx}):
     pprint.pprint(post)
+results = posts.update_many({"author": regx}, {'$inc': {'views': 1}})
+print(results.matched_count)
+print(results.modified_count)
 print()

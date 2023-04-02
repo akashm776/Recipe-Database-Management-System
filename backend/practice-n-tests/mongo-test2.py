@@ -1,4 +1,3 @@
-from flask import Flask, request
 from pymongo import MongoClient
 from pymongo.collation import Collation
 from pymongo import ReturnDocument
@@ -6,10 +5,8 @@ import re
 import pymongo
 import datetime
 
-app = Flask(__name__)
-
 client = MongoClient('localhost', 27017)
-db = client['recipe_db']
+db = client['test_recipe_db']
 recipes = db['recipes']
 
 recipes.delete_many({}) # delete all entries in database
@@ -82,39 +79,16 @@ recipes.insert_one({'name':'Snickerdoodles',
                 'date_added':datetime.datetime(2022, 11, 15, 15, 22, 50)
                 })
 
-@app.route("/query", methods=['POST'])
-def index():
-    data = request.get_json()
-    name = data["name"]
-    sortBy = data["sort"]
-    results = search_by_name(name, sortBy)
-    print(type(results))
-    response_body = {
-        "results": convert_to_json(results)
-    }
-    print()
-    print(response_body['results'])
-    return response_body
-
-def convert_to_json(results):
-    """
-    takes a mongodb cursor object and returns a JSON representation
-    """
-    json = list(results)
-    for entry in json:
-        entry.pop("_id") # _id field contains an object, which doesn't readily convert to JSON
-        entry['date_added'] = entry['date_added'].timestamp()
-    json = str(json).replace("'",'"') # using ' instead of " will break it
-    return json
-
-
 def search_by_name(name, sort):
     regx = re.compile(".*" + re.escape(name), re.IGNORECASE)
     match sort:
         case "alphabetical":
-            return recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True))
+            return list(recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
         case "date":
-            return recipes.find({"name": regx}).sort("date_added")
+            return list(recipes.find({"name": regx}).sort("date_added"))
         case "views":
-            return recipes.find({"name": regx}).sort("views", pymongo.DESCENDING)
-    return recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True))
+            return list(recipes.find({"name": regx}).sort("views", pymongo.DESCENDING))
+    return list(recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
+
+items = search_by_name("e","views")
+print(items)

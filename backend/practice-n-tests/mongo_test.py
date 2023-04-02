@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 client = MongoClient('localhost', 27017)
 
-db = client['recipe_db']
+db = client['test_recipe_db']
 recipes = db['recipes']
 
 input("WARNING this will delete all entries in the recipe database, press Ctrl+C to cancel, press enter to continue")
