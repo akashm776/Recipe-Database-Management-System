@@ -2,7 +2,7 @@ import {useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, CardHeader, CardMedia, Grid, MenuItem, Select, Typography } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Container } from '@mui/system';
 
@@ -33,11 +33,67 @@ function ResultList({ results }) {
   )
 }
 
+function TriStateCheckbox({ onChange, label }) {
+  // 0 is blank, 1 is checked, 2 is checked with minus
+  const [state, setState] = useState(0);
+
+  function handleCheckboxClick() {
+    let newState = (state+1)%3;
+    setState(newState);
+    onChange(label, newState);
+  };
+
+  return (
+    <FormControlLabel label={label} 
+      control={
+        <Checkbox
+          checked={state} // blank if false, checked if true
+          indeterminate={state === 2} // force the - symbol
+          onClick={handleCheckboxClick}
+        />
+      }
+    />
+  );
+}
+
+function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
+  function updateFilters(item, newState) {
+    switch (newState) {
+      case 0:
+        // remove from negative filters
+        setExcludes(excludes.filter((e)=>e!=item))
+        break;
+      case 1:
+        // add to positive filters
+        setIncludes(includes.concat(item))
+        break;
+      case 2:
+        // remove from positive filters
+        // add to negative filters
+        setIncludes(includes.filter((e)=>e!=item))
+        setExcludes(excludes.concat(item))
+        break;
+    }
+  }
+  return (
+    <div>
+      {items.map((item, index)=>{
+        return (
+          <TriStateCheckbox label={item} onChange={updateFilters}/>
+        )
+      })}
+    </div>
+  )
+}
+
 function App() {
   const [searchBarText, setSearchBarText] = useState("");
   const [sortBy, setSortBy] = useState("alphabetical"); // default value
+  const [posFilter, setPosFilter] = useState([])
+  const [negFilter, setNegFilter] = useState([])
   const [searchedFor, setSearchedFor] = useState("");
   const [results, setResults] = useState([]);
+  const [ingredients, setIngredients] = useState(["apple","beans","toast","caramel"]);
 
   function search(recipeName) {
     setSearchedFor(recipeName)
@@ -46,12 +102,13 @@ function App() {
       url: 'query',
       data: {
         name: recipeName,
-        sort: sortBy
+        sort: sortBy,
+        ingredients: posFilter
       }
     }).then((response) => {
       let res = JSON.parse(response.data.results);
       console.log("received "+res.length+" recipes");
-      //  console.log("received: "+results[0]['name']);
+      // console.log("received: "+results[0]['name']);
       setResults(res);
     })
   }
@@ -93,6 +150,9 @@ function App() {
             <MenuItem value="views">Views</MenuItem>
         </Select>
       </div>
+      <FilterList items={ingredients} includes={posFilter} setIncludes={setPosFilter} excludes={negFilter} setExcludes={setNegFilter} />
+      <p>PosFilter: <b>{posFilter}</b></p>
+      <p>NegFilter: <b>{negFilter}</b></p>
       <p>Search results for: <b>{searchedFor}</b></p>
       <ResultList results={results}/>
     </div>
