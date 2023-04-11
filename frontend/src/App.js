@@ -2,9 +2,15 @@ import {useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, CardHeader, CardMedia, Grid, MenuItem, Select, Typography } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Button, Card, CardContent, CardHeader, CardMedia, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton } from '@mui/material';
 import { Container } from '@mui/system';
+import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
+
+const data = [
+  {name: "Home", icon: <HomeOutlined /> },
+  { name: "Search Recipes", icon: <Search /> },
+  { name: "New Recipe", icon: <Add /> },
+];
 
 function ResultList({ results }) {
   return (
@@ -71,8 +77,29 @@ function App() {
     search(searchedFor);
   }
   
+  const [open, setOpen] = useState(false);
+
+  const getList = () => (
+    <div style={{ width: 250 }} onClick={() => setOpen(false)}>
+      {data.map((item, index) => (
+        <ListItem button key={index}>
+          <ListItemIcon>{item.icon}</ListItemIcon>
+          <ListItemText primary={item.name} />
+        </ListItem>
+      ))}
+    </div>
+  );
+
   return (
     <div className="App">
+
+    <div>
+      <Button className="sideBarButton" onClick={() => setOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
+      <Drawer open={open} anchor={"left"} onClose={() => setOpen(false)}>
+        {getList()}
+      </Drawer>
+    </div>
+
       <div className="searchRow" style={{display:'flex', margin:'12px'}}>
         <TextField 
           className="searchbar" label="Search" 
@@ -82,7 +109,7 @@ function App() {
           className='searchButton' 
           onClick={()=>{search(searchBarText)}} 
           style={{flex:'none', marginRight:'4px'}} variant='contained' >
-            <SearchIcon />
+            <Search />
         </Button>
         <Select 
           className='sortSelect' label="Sort by"
