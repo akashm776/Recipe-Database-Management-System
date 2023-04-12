@@ -87,20 +87,29 @@ def index():
     data = request.get_json()
     name = data["name"]
     sortBy = data["sort"]
-    results = search_by_name(name, sortBy)
-    print(type(results))
+    good_ingredients = data["include_ingredients"]
+    bad_ingredients = data["exclude_ingredients"]
+    print(name)
+    print(good_ingredients)
+    print(bad_ingredients)
+
+    cursor = search(name, good_ingredients, bad_ingredients)
+    cursor = sort(cursor, sortBy)
+    print(type(cursor))
+
     response_body = {
-        "results": convert_to_json(results)
+        "results": convert_to_json(cursor)
     }
     print()
     print(response_body['results'])
     return response_body
 
-def convert_to_json(results):
+def convert_to_json(cursor):
     """
     takes a mongodb cursor object and returns a JSON representation
     """
-    json = list(results)
+    json = list(cursor)
+    print(json)
     for entry in json:
         entry.pop("_id") # _id field contains an object, which doesn't readily convert to JSON
         entry['date_added'] = entry['date_added'].timestamp()
@@ -108,31 +117,40 @@ def convert_to_json(results):
     return json
 
 
-def search_by_name(name, sort, list_of_ingredients = []):
+def search(name, good_ingredients, bad_ingredients):
     regx = re.compile(".*" + re.escape(name), re.IGNORECASE)
+    if len(good_ingredients) > 0: # note that the $all condition will be false when good_ingredients is empty, so we need a check
+        return recipes.find({"$and":[{"name":regx},{"ingredients.name":{"$all": good_ingredients}},{"ingredients.name":{"$nin": bad_ingredients}}]})
+    else:
+        return recipes.find({"$and":[{"name":regx},{"ingredients.name":{"$nin": bad_ingredients}}]})
+
+def sort(cursor, sort):
     match sort:
         case "alphabetical":
-            return recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True))
+            return cursor.sort("name").collation(Collation(locale= "en", caseLevel=True))
         case "date":
-            return recipes.find({"name": regx}).sort("date_added")
+            return cursor.sort("date_added")
         case "views":
-            return recipes.find({"name": regx}).sort("views", pymongo.DESCENDING)
+            return cursor.sort("views", pymongo.DESCENDING)
         case "type":
-            return recipes.find({"name": regx}).sort("type")
+            return cursor.sort("type")
         case "time_mins":
-            return recipes.find({"name": regx}).sort("time_mins")
+            return cursor.sort("time_mins")
         case "energy":
-            return recipes.find({"name": regx}).sort("energy")
-        case "ingredients":
-            i = 0
-            res_set = set()
-            while i < len(list_of_ingredients):
-                ingredient = list_of_ingredients[i]
-                regx1 = re.compile(".*" + re.escape(ingredient), re.IGNORECASE)
-                res_set.add(recipes.find({"ingredients.name": regx1}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
-                i = i + 1
-            return res_set   
-    return recipes.find({"name": regx}).sort("name").collation(Collation(locale= "en", caseLevel=True))
+            return cursor.sort("energy")
+    return cursor.sort("name").collation(Collation(locale= "en", caseLevel=True))
+
+
+# def filter_ingredients(cursor, list_of_ingredients):
+#     # i = 0
+#     # res_set = set()
+#     # while i < len(list_of_ingredients):
+#     #     ingredient = list_of_ingredients[i]
+#     #     regx1 = re.compile(".*" + re.escape(ingredient), re.IGNORECASE)
+#     #     res_set.add(recipes.find({"ingredients.name": regx1}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
+#     #     i = i + 1
+#     return res_set   
+
 
 
 
