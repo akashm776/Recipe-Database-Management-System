@@ -67,18 +67,24 @@ new_posts = [{"author": "Mike",
               "text": "Another post!",
               "tags": ["bulk", "insert"],
               "date": datetime.datetime(2009, 11, 12, 11, 14),
-              "views": 0,},
+              "views": 0,
+              'ingredients':[{'name':'potatoes', 'notes':'4lbs'},
+                               {'name':'butter', 'notes':'1 1/2cups'}]},
               
              {"author": "Eliot",
               "title": "MongoDB is fun",
               "text": "and pretty easy too!",
               "date": datetime.datetime(2009, 11, 10, 10, 45),
-              "views": 0,},
+              "views": 0, 
+              'ingredients':[{'name':'all purpose flour', 'notes':'2 3/4cups'},
+                               {'name':'cream of tartar', 'notes':'2tsp'}]},
              {"author": "Chelsea",
               "title": "I require sustenance",
               "text": "Your firstborn will suffice",
               "date": datetime.datetime(1999, 12, 31, 23, 59),
-              "views": 0}]
+              "views": 0, 
+              'ingredients':[{'name':'semi sweet chocolate', 'notes':'8oz, chopped'},
+                               {'name':'butter', 'notes':'12tbsp, melted'}]}]
 result = posts.insert_many(new_posts)
 print(result.inserted_ids)
 print()
@@ -127,4 +133,13 @@ for post in posts.find({"author": regx}):
 results = posts.update_many({"author": regx}, {'$inc': {'views': 1}})
 print(results.matched_count)
 print(results.modified_count)
+print()
+
+# Search within list of lists.
+print("Search for specific ingredient")
+query = "butter"
+regx = re.compile(".*" + re.escape(query), re.IGNORECASE)
+print(regx)
+for post in posts.find({"ingredients.name": regx}).sort("author").collation(Collation(locale= "en", caseLevel=True)):
+    pprint.pprint(post)
 print()
