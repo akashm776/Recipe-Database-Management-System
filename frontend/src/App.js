@@ -76,13 +76,14 @@ function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
     }
   }
   return (
-    <Stack direction="row" spacing={2}>
+    <div style={{display:'flex', margin:'12px'}}>
       {/* {items.map((item, index)=>{
         return (
           <TriStateCheckbox label={item} onChange={updateFilters}/>
         )
       })} */}
       <Autocomplete
+        style={{flex:'auto', marginRight:'4px'}}
         value={includes}
         onChange={(event, newVal) => {setIncludes(newVal)}}
         multiple
@@ -96,6 +97,7 @@ function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
         )}
       />
       <Autocomplete
+        style={{flex:'auto'}}
         value={excludes}
         onChange={(event, newVal) => {setExcludes(newVal)}}
         multiple
@@ -108,7 +110,7 @@ function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
           />
         )}
       />
-    </Stack>
+    </div>
   )
 }
 
