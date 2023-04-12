@@ -2,7 +2,7 @@ import {useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Container } from '@mui/system';
 
@@ -89,11 +89,11 @@ function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
 function App() {
   const [searchBarText, setSearchBarText] = useState("");
   const [sortBy, setSortBy] = useState("alphabetical"); // default value
-  const [posFilter, setPosFilter] = useState([])
-  const [negFilter, setNegFilter] = useState([])
+  const [goodIngredients, setGoodIngredients] = useState([])
+  const [badIngredients, setBadIngredients] = useState([])
   const [searchedFor, setSearchedFor] = useState("");
   const [results, setResults] = useState([]);
-  const [ingredients, setIngredients] = useState(["apple","beans","toast","caramel"]);
+  const [ingredients, setIngredients] = useState(["ground beef","mild sausage","butter","potatoes"]);
 
   function search(recipeName) {
     setSearchedFor(recipeName)
@@ -103,7 +103,8 @@ function App() {
       data: {
         name: recipeName,
         sort: sortBy,
-        ingredients: posFilter
+        include_ingredients: goodIngredients,
+        exclude_ingredients: badIngredients
       }
     }).then((response) => {
       let res = JSON.parse(response.data.results);
@@ -150,9 +151,9 @@ function App() {
             <MenuItem value="views">Views</MenuItem>
         </Select>
       </div>
-      <FilterList items={ingredients} includes={posFilter} setIncludes={setPosFilter} excludes={negFilter} setExcludes={setNegFilter} />
-      <p>PosFilter: <b>{posFilter}</b></p>
-      <p>NegFilter: <b>{negFilter}</b></p>
+      <FilterList items={ingredients} includes={goodIngredients} setIncludes={setGoodIngredients} excludes={badIngredients} setExcludes={setBadIngredients} />
+      {/* <p>PosFilter: <b>{goodIngredients}</b></p>
+      <p>NegFilter: <b>{badIngredients}</b></p> */}
       <p>Search results for: <b>{searchedFor}</b></p>
       <ResultList results={results}/>
     </div>
