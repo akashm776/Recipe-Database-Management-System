@@ -2,7 +2,7 @@ import {useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Container } from '@mui/system';
 
