@@ -2,7 +2,7 @@ import {useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from '@mui/material';
+import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Grid, MenuItem, Select, Stack, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Container } from '@mui/system';
 
@@ -61,7 +61,7 @@ function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
     switch (newState) {
       case 0:
         // remove from negative filters
-        setExcludes(excludes.filter((e)=>e!=item))
+        setExcludes(excludes.filter((e)=>e!==item))
         break;
       case 1:
         // add to positive filters
@@ -70,19 +70,45 @@ function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
       case 2:
         // remove from positive filters
         // add to negative filters
-        setIncludes(includes.filter((e)=>e!=item))
+        setIncludes(includes.filter((e)=>e!==item))
         setExcludes(excludes.concat(item))
         break;
     }
   }
   return (
-    <div>
-      {items.map((item, index)=>{
+    <Stack direction="row" spacing={2}>
+      {/* {items.map((item, index)=>{
         return (
           <TriStateCheckbox label={item} onChange={updateFilters}/>
         )
-      })}
-    </div>
+      })} */}
+      <Autocomplete
+        value={includes}
+        onChange={(event, newVal) => {setIncludes(newVal)}}
+        multiple
+        options={items}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Included Ingredients"
+            placeholder="Type an ingredient"
+          />
+        )}
+      />
+      <Autocomplete
+        value={excludes}
+        onChange={(event, newVal) => {setExcludes(newVal)}}
+        multiple
+        options={items}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Excluded Ingredients"
+            placeholder="Type an ingredient"
+          />
+        )}
+      />
+    </Stack>
   )
 }
 
