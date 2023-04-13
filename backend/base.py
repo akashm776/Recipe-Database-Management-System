@@ -88,12 +88,12 @@ def index():
     name = data["name"]
     sortBy = data["sort"]
     results = search_by_name(name, sortBy)
-    print(type(results))
+    #print(type(results))
     response_body = {
         "results": convert_to_json(results)
     }
-    print()
-    print(response_body['results'])
+    #print()
+    #print(response_body['results'])
     return response_body
 
 def convert_to_json(results):
