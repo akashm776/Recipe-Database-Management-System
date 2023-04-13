@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Grid, MenuItem, Select, Stack, Typography } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton } from '@mui/material';
 import { Container } from '@mui/system';
 import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
 const data = [
-  {name: "Home", icon: <HomeOutlined /> },
+  { name: "Home", icon: <HomeOutlined /> },
   { name: "Search Recipes", icon: <Search /> },
   { name: "New Recipe", icon: <Add /> },
 ];
