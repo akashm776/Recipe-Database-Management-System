@@ -105,7 +105,10 @@ recipes.insert_one({'name': 'Slow Cooker Honey Teriyaki Chicken',
 6) Remove chicken and drain. Sred using a couple of forks and some determination. 
 7) Return the sauce drained to the now shredded chicken and mix.
 8) Serve on top of rice.
-'''})
+''',
+                    'views': 8,
+                    'date_added':datetime.datetime(2021, 1, 1, 1, 1, 1)
+                    })
 
 recipes.insert_one({'name': 'Slow Cooker Beef Stew',
                     'ingredients': [{'name': 'flour', 'notes': '1/4 cup'},
@@ -142,7 +145,10 @@ recipes.insert_one({'name': 'Slow Cooker Beef Stew',
 4) After cooking, mix the leftover water and cornstarch together and add to the pot. Mix to thicken.
 5) Then, add the last 2 tbsp of butter and mix.
 6) Serve.
-'''})
+''',
+                    'views': 2,
+                    'date_added':datetime.datetime(1993, 8, 7, 0, 2, 17)
+                    })
 
 
 @app.route("/query", methods=['POST'])
@@ -152,19 +158,19 @@ def index():
     sortBy = data["sort"]
     good_ingredients = data["include_ingredients"]
     bad_ingredients = data["exclude_ingredients"]
-    print(name)
-    print(good_ingredients)
-    print(bad_ingredients)
+    #print(name)
+    #print(good_ingredients)
+    #print(bad_ingredients)
 
     cursor = search(name, good_ingredients, bad_ingredients)
     cursor = sort(cursor, sortBy)
-    print(type(cursor))
+    #print(type(cursor))
 
     response_body = {
         "results": convert_to_json(cursor)
     }
-    print()
-    print(response_body['results'])
+    #print()
+    #print(response_body['results'])
     return response_body
 
 def convert_to_json(cursor):
@@ -172,7 +178,7 @@ def convert_to_json(cursor):
     takes a mongodb cursor object and returns a JSON representation
     """
     json = list(cursor)
-    print(json)
+    #print(json)
     for entry in json:
         # _id field contains an object, which doesn't readily convert to JSON
         entry.pop("_id")
