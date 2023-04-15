@@ -8,11 +8,6 @@ import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbo
 import { Container } from '@mui/system';
 import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
-const drawerItems = [
-  { name: "Home", icon: <HomeOutlined /> },
-  { name: "Search Recipes", icon: <Search /> },
-  { name: "New Recipe", icon: <Add /> },
-];
 
 function ResultList({ results }) {
     return (
@@ -165,13 +160,19 @@ const SearchPage = () => {
       setSortBy(event.target.value);
       search(searchedFor);
     }
+
+    const drawerItems = [
+      { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
+      { name: "Search Recipes", icon: <Search />, action:() => navigate("/") },
+      { name: "New Recipe", icon: <Add />, action:() => navigate("/add-recipe") },
+    ];
   
     const [drawerOpen, setDrawerOpen] = useState(false);
   
     const getDrawerList = () => (
       <div style={{ width: 250 }} onClick={() => setDrawerOpen(false)}>
         {drawerItems.map((item, index) => (
-          <ListItem button key={index}>
+          <ListItem button onClick={item.action} key={index}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.name} />
           </ListItem>
