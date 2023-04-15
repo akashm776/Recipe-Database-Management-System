@@ -8,7 +8,7 @@ import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbo
 import { Container } from '@mui/system';
 import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
-const data = [
+const drawerItems = [
   { name: "Home", icon: <HomeOutlined /> },
   { name: "Search Recipes", icon: <Search /> },
   { name: "New Recipe", icon: <Add /> },
@@ -166,11 +166,11 @@ const SearchPage = () => {
       search(searchedFor);
     }
   
-    const [open, setOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
   
-    const getList = () => (
-      <div style={{ width: 250 }} onClick={() => setOpen(false)}>
-        {data.map((item, index) => (
+    const getDrawerList = () => (
+      <div style={{ width: 250 }} onClick={() => setDrawerOpen(false)}>
+        {drawerItems.map((item, index) => (
           <ListItem button key={index}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.name} />
@@ -182,14 +182,12 @@ const SearchPage = () => {
     return (
       <div className="App">
         <Button variant="contained" onClick={() => navigate("/add-recipe")}>Add Recipe</Button>
-        <div>
-          <Button className="sideBarButton" onClick={() => setOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
-          <Drawer open={open} anchor={"left"} onClose={() => setOpen(false)}>
-            {getList()}
-          </Drawer>
-        </div>
 
         <div className="searchRow" style={{display:'flex', margin:'12px'}}>
+          <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
+          <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
+            {getDrawerList()}
+          </Drawer>
           <TextField 
             className="searchbar" label="Search" 
             onChange={handleChange} onKeyDown={handleKeyDown} 
