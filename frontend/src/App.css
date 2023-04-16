@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+.sideBarButton {
+  text-align: left;
+  float: left;
+  /* display: inline-block; */
+}
