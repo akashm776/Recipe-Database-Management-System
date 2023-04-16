@@ -141,15 +141,6 @@ def sort(cursor, sort):
     return cursor.sort("name").collation(Collation(locale= "en", caseLevel=True))
 
 
-# def filter_ingredients(cursor, list_of_ingredients):
-#     # i = 0
-#     # res_set = set()
-#     # while i < len(list_of_ingredients):
-#     #     ingredient = list_of_ingredients[i]
-#     #     regx1 = re.compile(".*" + re.escape(ingredient), re.IGNORECASE)
-#     #     res_set.add(recipes.find({"ingredients.name": regx1}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
-#     #     i = i + 1
-#     return res_set   
 
 
 
