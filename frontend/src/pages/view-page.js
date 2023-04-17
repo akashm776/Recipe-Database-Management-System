@@ -2,15 +2,16 @@ import React from 'react';
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton } from '@mui/material';
-import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
+import {Add, Edit, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
-const AddPage = () => {
+const ViewPage = () => {
     const navigate = useNavigate();
 
     const drawerItems = [
       { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
       { name: "Search Recipes", icon: <Search />, action:() => navigate("/") },
       { name: "New Recipe", icon: <Add />, action:() => navigate("/add-recipe") },
+      { name: "Edit Recipe", icon: <Edit />, action:() => navigate("/edit-recipe") },
     ];
   
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -38,4 +39,4 @@ const AddPage = () => {
     )
 }
 
-export default AddPage;
+export default ViewPage;

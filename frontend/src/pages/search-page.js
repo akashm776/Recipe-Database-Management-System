@@ -10,13 +10,14 @@ import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
 
 function ResultList({ results }) {
+    const navigate = useNavigate();
     return (
       <Container>
         <Grid container spacing={1} alignItems="center">
           {results.map((recipe, index) => {
             return (
               <Grid key={index} item xs={4}>
-                <Card sx={{ minWidth: 200, maxWidth: 400 }} variant='outlined'>
+                <Card sx={{ minWidth: 200, maxWidth: 400 }} variant='outlined' onClick={() => navigate("/view-recipe")}>
                   <CardHeader title={recipe.name}/>
                   <CardMedia 
                     sx={{height:150}}
