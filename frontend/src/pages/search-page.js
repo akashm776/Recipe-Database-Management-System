@@ -182,8 +182,6 @@ const SearchPage = () => {
     
     return (
       <div className="App">
-        <Button variant="contained" onClick={() => navigate("/add-recipe")}>Add Recipe</Button>
-
         <div className="searchRow" style={{display:'flex', margin:'12px'}}>
           <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
           <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
