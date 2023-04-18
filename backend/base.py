@@ -228,5 +228,12 @@ def handle_upload():
 
     return "Successfully uploaded image!"
 
+def listOfIngredients():
+    ingredients = []
+    for recipe in recipes.find():
+        for ingredient in recipe['ingredients']:
+            ingredients.append(ingredient['name'])
+    return ingredients
+
 
 
