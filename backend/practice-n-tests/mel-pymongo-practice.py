@@ -18,7 +18,9 @@ import datetime
 post = {"author": "Mike",
         "text": "My first blog post!",
         "tags" : ["mongodb", "python", "pymongo"],
-        "date": datetime.datetime.utcnow()}
+        "date": datetime.datetime.utcnow(),
+        'ingredients':[{'name':'semi sweet chocolate', 'notes':'8oz, chopped'},
+                               {'name':'butter', 'notes':'12tbsp, melted'}]}
 
 posts = db.posts
 # same as: posts = db['posts']
@@ -91,6 +93,12 @@ print()
 
 print("find")
 pprint.pprint(list(posts.find().sort("date", pymongo.DESCENDING)))
+
+print("\n")
+for post in posts.find():
+   # print(post['ingredients'])
+    for ingredient in post['ingredients']:
+        print(ingredient['name'])
 
 print("Loop")
 for post in posts.find():

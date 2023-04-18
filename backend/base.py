@@ -210,8 +210,12 @@ def sort(cursor, sort):
             return cursor.sort("energy")
     return cursor.sort("name").collation(Collation(locale= "en", caseLevel=True))
 
-
-
+def listOfIngredients():
+    ingredients = []
+    for recipe in recipes.find():
+        for ingredient in recipe['ingredients']:
+            ingredients.append(ingredient['name'])
+    return ingredients
 
 
 
