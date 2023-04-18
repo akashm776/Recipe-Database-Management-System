@@ -1,11 +1,14 @@
 from flask import Flask, request
+from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from pymongo.collation import Collation
 from pymongo import ReturnDocument
 import re
+import os
 import pymongo
 import datetime
 
+IMAGE_DIR = "../frontend/public/images/" # trailing / is required
 app = Flask(__name__)
 
 client = MongoClient('localhost', 27017)
@@ -211,16 +214,19 @@ def sort(cursor, sort):
     return cursor.sort("name").collation(Collation(locale= "en", caseLevel=True))
 
 
-# def filter_ingredients(cursor, list_of_ingredients):
-#     # i = 0
-#     # res_set = set()
-#     # while i < len(list_of_ingredients):
-#     #     ingredient = list_of_ingredients[i]
-#     #     regx1 = re.compile(".*" + re.escape(ingredient), re.IGNORECASE)
-#     #     res_set.add(recipes.find({"ingredients.name": regx1}).sort("name").collation(Collation(locale= "en", caseLevel=True)))
-#     #     i = i + 1
-#     return res_set   
+@app.route("/upload", methods=["POST"])
+def handle_upload():
+    image = request.files['image']
 
+    filename = secure_filename(image.filename)
+    path = IMAGE_DIR+filename
+    if filename == "" or os.path.exists(path):
+        return "Bad filename"
+    
+    image.save(path)
+    print(f"file saved to {path}")
+
+    return "Successfully uploaded image!"
 
 
 
