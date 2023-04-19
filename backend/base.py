@@ -5,6 +5,7 @@ from pymongo.collation import Collation
 from pymongo import ReturnDocument
 import re
 import os
+import json
 import pymongo
 import datetime
 
@@ -129,8 +130,8 @@ recipes.insert_one({'name': 'Slow Cooker Beef Stew',
                                     {'name': 'butter', 'notes': '3 tbsp'},
                                     {'name': 'onion', 'notes': '2 cups'},
                                     {'name': 'garlic', 'notes': '4 cloves'},
-                                    {'name': 'red wine (optional)',
-                                     'notes': '1 cup'},
+                                    {'name': 'red wine',
+                                     'notes': '(optional) 1 cup'},
                                     {'name': 'beef broth', 'notes': '4 cups'},
                                     {'name': 'beef bouillon', 'notes': '2 cubes'},
                                     {'name': 'worcestershire sauce',
@@ -233,12 +234,10 @@ def handle_upload():
 
     return "Successfully uploaded image!"
 
+@app.route("/ingredientlist", methods=["GET"])
 def listOfIngredients():
-    ingredients = []
-    for recipe in recipes.find():
-        for ingredient in recipe['ingredients']:
-            ingredients.append(ingredient['name'])
-    return ingredients
+    ingredients = recipes.find().distinct("ingredients.name")
+    return json.dumps(ingredients)
 
 
 
