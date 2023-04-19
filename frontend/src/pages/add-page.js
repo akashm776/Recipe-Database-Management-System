@@ -2,12 +2,12 @@ import React from 'react';
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem } from '@mui/material';
-import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
+import {Add, Search, DensityMedium, HomeOutlined, Details} from "@mui/icons-material";
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 
-const maxUtensils = 50;
+const maxUtensils = 100;
 const maxIngredients = 100;
 
 function uploadImage(file) {
@@ -41,11 +41,13 @@ const AddPage = () => {
     const [time, setTime] = useState(0);
     const [directions, setDirections] = useState(null);
     const [utensils, setUtensils] = useState([Array(maxUtensils).fill(null)]);
-    const [utensilsActive, setUtensilsActive] = useState([Array(maxUtensils).fill(null)]);
-    const [nextUtensil, setNextUtensil] = useState(0);
+    const [utensilsActive, setUtensilsActive] = useState([Array(maxUtensils).map((a, i) => boxLogicInit(i))]);
+    const [nextUtensil, setNextUtensil] = useState(1);
     const [ingredients, setIngredients] = useState([Array(maxIngredients).fill(null)]);
-    const [ingredientsActive, setIngredientsActive] = useState([Array(maxIngredients).fill(null)]);
-    const [nextIngredient, setNextIngredient] = useState(0);
+    const [details, setDetails] = useState([Array(maxIngredients).fill(null)]);
+    const [ingredientsActive, setIngredientsActive] = useState([Array(maxIngredients).map((a, i) => boxLogicInit(i))]);
+    const [nextIngredient, setNextIngredient] = useState(1);
+
 
     const drawerItems = [
       { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
@@ -73,7 +75,7 @@ const AddPage = () => {
       return (
         <li key={i}>
           <br />
-          <TextField label={uLabel}
+          <TextField label={uLabel} onChange={event => handleUtensilChange(event, i)}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
         </li>
       )
@@ -90,14 +92,27 @@ const AddPage = () => {
         <li key={i}>
           <br />
           <TextField 
-            label={iLabel}
+            label={iLabel} onChange={event => handleIngredientChange(event, i)}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
           <TextField 
-            label={dLabel}
+            label={dLabel} onChange={event => handleDetailChange(event, i)}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
         </li>
       )
     });
+
+    function boxLogicInit(i) {
+      if (i === 0) {
+        return 1;
+      } else {
+        return null;
+      }
+    }
+
+    function selectFile(event) {
+      setCurrentImage(event.target.files[0])
+      setImagePreview(URL.createObjectURL(event.target.files[0]))
+    }
 
     function addUtensil() {
       utensilsActive[nextUtensil] = 1;
@@ -107,11 +122,6 @@ const AddPage = () => {
     function addIngredient() {
       ingredientsActive[nextIngredient] = 1;
       setNextIngredient(nextIngredient + 1);
-    }
-
-    function selectFile(event) {
-      setCurrentImage(event.target.files[0])
-      setImagePreview(URL.createObjectURL(event.target.files[0]))
     }
 
     function handleTitleChange(event) {
@@ -128,6 +138,24 @@ const AddPage = () => {
 
     function handleDirectionsChange(event) {
       setDirections(event.target.value);
+    }
+
+    function handleUtensilChange(event, uNum) {
+      const newUtensils = utensils.slice();
+      newUtensils[uNum] = event.target.value;
+      setUtensils(newUtensils);
+    }
+
+    function handleIngredientChange(event, iNum) {
+      const newIngredients = ingredients.slice();
+      newIngredients[iNum] = event.target.value;
+      setIngredients(newIngredients);
+    }
+
+    function handleDetailChange(event, dNum) {
+      const newDetails = details.slice();
+      newDetails[dNum] = event.target.value;
+      setIngredients(newDetails);
     }
 
     return (
@@ -197,7 +225,7 @@ const AddPage = () => {
           <ol>
             {utensilBoxes}
           </ol>
-          <Button onClick={addUtensil}>Add Utensil</Button>
+          <Button onClick={addUtensil} variant="outlined">Add Utensil</Button>
         </div>
 
         <div>
@@ -206,7 +234,7 @@ const AddPage = () => {
           <ol>
             {ingredientBoxes}
           </ol>
-          <Button onClick={addIngredient}>Add Ingredient</Button>
+          <Button onClick={addIngredient} variant="outlined">Add Ingredient</Button>
         </div>
 
         <div>
