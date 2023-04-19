@@ -39,6 +39,7 @@ const AddPage = () => {
     const [title, setTitle] = useState(null);
     const [energy, setEnergy] = useState("Easy");
     const [time, setTime] = useState(0);
+    const [mealType, setMealType] = useState(null);
     const [directions, setDirections] = useState(null);
     const [utensils, setUtensils] = useState([Array(maxUtensils).fill(null)]);
     const [utensilsActive, setUtensilsActive] = useState([Array(maxUtensils).map((a, i) => boxLogicInit(i))]);
@@ -136,6 +137,10 @@ const AddPage = () => {
       setTime(event.target.value);
     }
 
+    function handleMealTypeChange(event) {
+      setMealType(event.target.value);
+    }
+
     function handleDirectionsChange(event) {
       setDirections(event.target.value);
     }
@@ -216,6 +221,10 @@ const AddPage = () => {
           &emsp;
           <TextField 
             label="Time in Minutes" onChange={handleTimeChange}
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
+          <br /><br />
+          <TextField 
+            label="Meal Type" onChange={handleMealTypeChange}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
         </div>
 
