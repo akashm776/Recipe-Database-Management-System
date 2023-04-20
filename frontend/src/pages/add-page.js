@@ -9,6 +9,7 @@ import { Box } from '@mui/system';
 
 const maxUtensils = 100;
 const maxIngredients = 100;
+const imageDir = "../frontend/public/images/";
 
 function uploadImage(file) {
   let formdata = new FormData();
@@ -29,6 +30,20 @@ function uploadImage(file) {
   //     file: formdata
   //   }
   // })
+}
+
+function addRecipe(newRecipe) {
+  axios({
+    method: 'POST',
+    url: 'newrecipe',
+    data: {
+      recipe: newRecipe
+    }
+  }).then((response) => {
+    //let recipeID = JSON.parse(response.data.results);
+    //console.log(recipeID);
+    console.log(response.data)
+  });
 }
 
 const AddPage = () => {
@@ -113,41 +128,76 @@ const AddPage = () => {
     function handleSave() {
       {/* TODO:
           - create recipe object
-            - remember to set views
+            - get image url
           - convert object to JSON
           - send to backend
       */}
+      
+      // currently Title is the only mandatory info
+      if (typeof(title) !== "string" || title.length === 0) {
+        // maybe show an error message to indicate why recipe wasn't saved
+        return;
+      }
+
+      // array of all listed utensils in order.
+      // if there are no utensils then it will be an array of 0 length.
       let uArray = Array(0);
       for (let i = 0; i < maxUtensils; i++) {
         if (typeof(utensils[i]) === "string" && utensils[i].length > 0) {
           uArray = [...uArray, utensils[i]];
         }
       }
-
+      
+      // array of all listed ingredients and the corresponsing details in order.
+      // if there are no ingredients then it will be an array of 0 length.
+      // if an ingredient has no details, it will still be saved.
+      // if there are details with no ingredient, it will not be saved.
       let iArray = Array(0);
+      const emptyString = "";
       for (let i = 0; i < maxIngredients; i++) {
         if (typeof(ingredients[i]) === "string" && ingredients[i].length > 0) {
           if (typeof(details[i]) === "string" && details[i].length > 0) {
             iArray = [...iArray, {name: ingredients[i], notes: details[i]}];
           } else {
-            iArray = [...iArray, {name: ingredients[i]}];
+            iArray = [...iArray, {name: ingredients[i], notes: ""}];
           }
         }
       }
-      
-      if (uArray.length < 1) {
-        uArray = null;
-      }
-      if (iArray.length < 1) {
-        iArray = null;
+      const recipeObj = {
+        name: title,
+        image_path: "", // TODO
+        energy: energy,
+        utensils: uArray,
+        ingredients: iArray,
+        views: 0,
+        date_added: Date.now()
+      };
+
+      // add time to cook
+      // TODO: disallow non-numerical input
+      if (typeof(time) === "string" && time.length > 0) {
+        recipeObj.time_mins = time;
+      } else {
+        recipeObj.time_mins = "";
       }
 
-      if (typeof(title) !== "string" || title.length === 0) {
-        return;
+      // add meat type
+      if (typeof(mealType) === "string" && mealType.length > 0) {
+        recipeObj.meal_type = mealType;
+      } else {
+        recipeObj.meal_type = "";
       }
-      const recipeObj = {
-        name: title
-      };
+
+      // add directions
+      if (typeof(directions) === "string" && directions.length > 0) {
+        recipeObj.instructions = directions;
+      } else {
+        recipeObj.instructions = "";
+      }
+
+      console.log(JSON.stringify(recipeObj));
+
+      addRecipe(JSON.stringify(recipeObj));
     }
 
     function addUtensil() {
@@ -255,7 +305,7 @@ const AddPage = () => {
           </Select>
           &emsp;
           <TextField 
-            label="Time in Minutes" onChange={handleTimeChange} type="number"
+            label="Time in Minutes" onChange={handleTimeChange}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
           <br /><br />
           <TextField 

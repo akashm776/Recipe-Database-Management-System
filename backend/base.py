@@ -7,7 +7,7 @@ import re
 import os
 import json
 import pymongo
-import datetime
+import time
 
 IMAGE_DIR = "../frontend/public/images/" # trailing / is required
 app = Flask(__name__)
@@ -18,12 +18,14 @@ recipes = db['recipes']
 
 recipes.delete_many({})  # delete all entries in database
 
+current_time = int(time.time() * 1000) # miliseconds since the epoch
+
 recipes.insert_one({'name': 'Meatballs',
                     'ingredients': [{'name': 'ground beef', 'notes': '1lb, preferrably 80%% or above'},
                                     {'name': 'mild sausage', 'notes': '1/2lb'}],
                     'time_mins': 45,
                     'energy': 'moderate',
-                    'type': 'dinner',
+                    'meal_type': 'dinner',
                     'utensils': ['measuring spoons', '1 bowl', 'stovetop', 'pan', 'baking sheet'],
                     'instructions': '''1) Preheat Oven to 400℉
 2) Mix all ingredients but the olive oil in a medium bowl
@@ -31,7 +33,7 @@ recipes.insert_one({'name': 'Meatballs',
 4) Oil a pan using the olive oil and, over medium heat, give each meatball a couple minutes of cooking on 3 sides. I know they’re spheres and don’t have sides.
 5) Transfer the half-cooked meatballs to a foil-lined baking tray and bake for 20 minutes or until the insides are up to temp.''',
                     'views': 1,
-                    'date_added': datetime.datetime(2023, 3, 26, 6, 36, 48)
+                    'date_added': int(time.mktime((2023, 3, 26, 6, 36, 48, 6, 85, -1)) * 1000)
                     })
 
 recipes.insert_one({'name': 'Brownies',
@@ -39,7 +41,7 @@ recipes.insert_one({'name': 'Brownies',
                                     {'name': 'butter', 'notes': '12tbsp, melted'}],
                     'time_mins': 45,
                     'energy': 'moderate',
-                    'type': 'sweets',
+                    'meal_type': 'sweets',
                     'utensils': ['measuring spoons', '1 bowl', 'stovetop', '8x8 pan', 'spatula', 'parchment paper', 'whisk', 'some patience'],
                     'instructions': '''1) Preheat Oven to 350℉
 2) Line an 8x8 pan with parchment paper and grease
@@ -50,7 +52,7 @@ recipes.insert_one({'name': 'Brownies',
 7) Bake for 20-25 minutes- check using the toothpick method
 8) Eat and burn your mouth because you forgot to let them cool''',
                     'views': 3,
-                    'date_added': datetime.datetime.utcnow()
+                    'date_added': current_time
                     })
 
 recipes.insert_one({'name': 'Slow Cooker Mashed Potatoes',
@@ -58,7 +60,7 @@ recipes.insert_one({'name': 'Slow Cooker Mashed Potatoes',
                                     {'name': 'butter', 'notes': '1 1/2cups'}],
                     'time_mins': 240,
                     'energy': 'moderate',
-                    'type': 'side dish',
+                    'meal_type': 'side dish',
                     'utensils': ['measuring spoons', 'cutting board', 'slow cooker', 'knife'],
                     'instructions': '''1) Peel and dice potatoes into ~1in cubes
 2) Dump all ingredients except for the milk into crock pot
@@ -66,7 +68,7 @@ recipes.insert_one({'name': 'Slow Cooker Mashed Potatoes',
 4) Remove the lid and mash the potatoes, mixing in the milk as you go.
 5) Eat''',
                     'views': 1,
-                    'date_added': datetime.datetime(2022, 4, 13, 23, 2, 27)
+                    'date_added': int(time.mktime((2022, 4, 13, 23, 2, 27, 2, 103, -1)) * 1000)
                     })
 
 recipes.insert_one({'name': 'Snickerdoodles',
@@ -79,7 +81,7 @@ recipes.insert_one({'name': 'Snickerdoodles',
                                     {'nane': 'vanilla extract', 'notes': '1 tsp'}],
                     'time_mins': 20,
                     'energy': 'moderate',
-                    'type': 'sweets',
+                    'meal_type': 'sweets',
                     'utensils': ['measuring spoons', '2 bowls', 'stove', 'baking sheet'],
                     'instructions': '''1) Preheat Oven to 350℉
 2) In a large bowl, cream together butter and sugar. Then add eggs and vanilla and blend well.
@@ -88,7 +90,7 @@ recipes.insert_one({'name': 'Snickerdoodles',
 5) Scoop out dough and roll into a ball. Roll the ball into the cinnamon sugar coating and set onto an ungreased baking sheet 2 inches apart.
 6) Bake for 8-10 minutes''',
                     'views': 4,
-                    'date_added': datetime.datetime(2022, 11, 15, 15, 22, 50)
+                    'date_added': int(time.mktime((2022, 11, 15, 15, 22, 50, 1, 319, -1)) * 1000)
                     })
 
 recipes.insert_one({'name': 'Slow Cooker Honey Teriyaki Chicken',
@@ -104,7 +106,7 @@ recipes.insert_one({'name': 'Slow Cooker Honey Teriyaki Chicken',
                                     {'name': 'water', 'notes': '1/4 cup'}, ],
                     'time_mins': 260,
                     'energy': 'easy',
-                    'type': 'dinner',
+                    'meal_type': 'dinner',
                     'utensils': ['measuring spoons', 'slow cooker', 'spoon'],
                     'instructions': '''1) Reminder to set your rice to cook if serving over rice.
                 2) You could mix the sauce in a separate bowl, but that adds on dishes to do later. Alternatively: mix the soy sauce, ginger, onion, rice wine vinegar, garlic, and pepper inside the crock pot first.
@@ -116,7 +118,7 @@ recipes.insert_one({'name': 'Slow Cooker Honey Teriyaki Chicken',
 8) Serve on top of rice.
 ''',
                     'views': 8,
-                    'date_added':datetime.datetime(2021, 1, 1, 1, 1, 1)
+                    'date_added': int(time.mktime((2021, 1, 1, 1, 1, 1, 4, 1, -1)) * 1000) # Converted to UNIX time
                     })
 
 recipes.insert_one({'name': 'Slow Cooker Beef Stew',
@@ -146,7 +148,7 @@ recipes.insert_one({'name': 'Slow Cooker Beef Stew',
                                     {'name': 'cornstarch', 'notes': '3 tbsp'}, ],
                     'time_mins': 260,
                     'energy': 'moderate',
-                    'type': 'dinner',
+                    'meal_type': 'dinner',
                     'utensils': ['measuring spoons', '1 bowl', 'crock pot', 'knife', 'cutting board'],
                     'instructions': '''1) Cut meat, potatoes, onions, and carrots into 1” pieces.
 2) Mix everything but the water, cornstarch, and 2 tbsp butter into the crock pot.
@@ -156,7 +158,7 @@ recipes.insert_one({'name': 'Slow Cooker Beef Stew',
 6) Serve.
 ''',
                     'views': 2,
-                    'date_added':datetime.datetime(1993, 8, 7, 0, 2, 17)
+                    'date_added': int(time.mktime((1993, 8, 7, 0, 2, 17, 5, 219, -1)) * 1000) # Converted to UNIX time
                     })
 
 
@@ -191,7 +193,7 @@ def convert_to_json(cursor):
     for entry in json:
         # _id field contains an object, which doesn't readily convert to JSON
         entry.pop("_id")
-        entry['date_added'] = entry['date_added'].timestamp()
+        #entry['date_added'] = entry['date_added'].timestamp()
     json = str(json).replace("'", '"')  # using ' instead of " will break it
     return json
 
@@ -211,8 +213,8 @@ def sort(cursor, sort):
             return cursor.sort("date_added")
         case "views":
             return cursor.sort("views", pymongo.DESCENDING)
-        case "type":
-            return cursor.sort("type")
+        case "meal_type":
+            return cursor.sort("meal_type")
         case "time_mins":
             return cursor.sort("time_mins")
         case "energy":
@@ -240,4 +242,14 @@ def listOfIngredients():
     return json.dumps(ingredients)
 
 
-
+@app.route("/newrecipe", methods=["POST"])
+def add_recipe():
+    data = request.get_json()
+    new_recipe = data["recipe"]
+    dict_recipe = json.loads(new_recipe)
+    insert_result = recipes.insert_one(dict_recipe)
+    
+    response_body = {
+        "results": str(insert_result.inserted_id)
+    }
+    return str(insert_result.inserted_id)
