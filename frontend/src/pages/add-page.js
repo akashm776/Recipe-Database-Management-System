@@ -68,24 +68,18 @@ const AddPage = () => {
     );
 
     const utensilBoxes = utensilsActive.map((thingy, i) => {
-      {/* if (!utensilsActive[0]) {
-        addUtensil();
-      } */}
       let uLabel = "Utensil " + (i + 1);
 
       return (
         <li key={i}>
           <br />
           <TextField label={uLabel} onChange={event => handleUtensilChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
         </li>
       )
     });
 
     const ingredientBoxes = ingredientsActive.map((thingy, i) => {
-      {/* if (!ingredientsActive[0]) {
-        addIngredient();
-      } */}
       let iLabel = "Ingredient " + (i + 1);
       let dLabel = "Details for Ingredient " + (i + 1);
 
@@ -94,10 +88,11 @@ const AddPage = () => {
           <br />
           <TextField 
             label={iLabel} onChange={event => handleIngredientChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
+          &ensp;
           <TextField 
             label={dLabel} onChange={event => handleDetailChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
         </li>
       )
     });
@@ -113,6 +108,46 @@ const AddPage = () => {
     function selectFile(event) {
       setCurrentImage(event.target.files[0])
       setImagePreview(URL.createObjectURL(event.target.files[0]))
+    }
+
+    function handleSave() {
+      {/* TODO:
+          - create recipe object
+            - remember to set views
+          - convert object to JSON
+          - send to backend
+      */}
+      let uArray = Array(0);
+      for (let i = 0; i < maxUtensils; i++) {
+        if (typeof(utensils[i]) === "string" && utensils[i].length > 0) {
+          uArray = [...uArray, utensils[i]];
+        }
+      }
+
+      let iArray = Array(0);
+      for (let i = 0; i < maxIngredients; i++) {
+        if (typeof(ingredients[i]) === "string" && ingredients[i].length > 0) {
+          if (typeof(details[i]) === "string" && details[i].length > 0) {
+            iArray = [...iArray, {name: ingredients[i], notes: details[i]}];
+          } else {
+            iArray = [...iArray, {name: ingredients[i]}];
+          }
+        }
+      }
+      
+      if (uArray.length < 1) {
+        uArray = null;
+      }
+      if (iArray.length < 1) {
+        iArray = null;
+      }
+
+      if (typeof(title) !== "string" || title.length === 0) {
+        return;
+      }
+      const recipeObj = {
+        name: title
+      };
     }
 
     function addUtensil() {
@@ -160,7 +195,7 @@ const AddPage = () => {
     function handleDetailChange(event, dNum) {
       const newDetails = details.slice();
       newDetails[dNum] = event.target.value;
-      setIngredients(newDetails);
+      setDetails(newDetails);
     }
 
     return (
@@ -207,7 +242,7 @@ const AddPage = () => {
         <div>
           <TextField 
             label="Title" onChange={handleTitleChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
           <br /><br />
           Energy:&ensp;
           <Select 
@@ -220,12 +255,12 @@ const AddPage = () => {
           </Select>
           &emsp;
           <TextField 
-            label="Time in Minutes" onChange={handleTimeChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
+            label="Time in Minutes" onChange={handleTimeChange} type="number"
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
           <br /><br />
           <TextField 
             label="Meal Type" onChange={handleMealTypeChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
         </div>
 
         <div>
@@ -244,13 +279,17 @@ const AddPage = () => {
             {ingredientBoxes}
           </ol>
           <Button onClick={addIngredient} variant="outlined">Add Ingredient</Button>
+          <hr />
         </div>
 
-        <div>
-          <hr /><br />
+        <div className="searchRow" style={{display:'flex', margin:'12px'}} >
+          <br />
           <TextField 
             label="Directions" onChange={handleDirectionsChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel autoFocus />
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel multiline />
+        </div>
+        <div>
+          <Button onClick={handleSave} variant="outlined">Save</Button>
         </div>
         
         {/* </div> */}
