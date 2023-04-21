@@ -222,20 +222,6 @@ def sort(cursor, sort):
     return cursor.sort("name").collation(Collation(locale= "en", caseLevel=True))
 
 
-@app.route("/upload", methods=["POST"])
-def handle_upload():
-    image = request.files['image']
-
-    filename = secure_filename(image.filename)
-    path = IMAGE_DIR+filename
-    if filename == "" or os.path.exists(path):
-        return "Bad filename"
-    
-    image.save(path)
-    print(f"file saved to {path}")
-
-    return "Successfully uploaded image!"
-
 @app.route("/ingredientlist", methods=["GET"])
 def listOfIngredients():
     ingredients = recipes.find().distinct("ingredients.name")
@@ -243,12 +229,29 @@ def listOfIngredients():
 
 
 @app.route("/newrecipe", methods=["POST"])
-def add_recipe():
-    data = request.get_json()
-    new_recipe = data["recipe"]
-    dict_recipe = json.loads(new_recipe)
-    insert_result = recipes.insert_one(dict_recipe)
-    
+def handle_upload():
+    data = dict(request.form)
+
+    print(data)
+    # TODO verify dictionary keys before blindly inserting them
+    # TODO reject if name overlaps
+    if 'image' in request.files.keys():
+        image = request.files['image']
+
+        filename = secure_filename(image.filename)
+        path = IMAGE_DIR+filename
+
+        if filename == "" or os.path.exists(path):
+            pass
+            # TODO create random filename
+        
+        image.save(path)
+        print(f"file saved to {path}")
+
+        data["image_path"] = "/images/"+filename # remember we need the relative path from inside the public directory
+
+    insert_result = recipes.insert_one(data)
+
     response_body = {
         "results": str(insert_result.inserted_id)
     }

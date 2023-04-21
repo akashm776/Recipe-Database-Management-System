@@ -19,7 +19,7 @@ function ResultList({ results }) {
                   <CardHeader title={recipe.name}/>
                   <CardMedia 
                     sx={{height:150}}
-                    image="/istockphoto-612x612.jpg"
+                    image={recipe['image_path']!==undefined ? recipe['image_path'] : "/istockphoto-612x612.jpg"}
                   />
                   <CardContent>
                     <Typography variant='body2' color='text.secondary'>
@@ -118,13 +118,17 @@ function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
   )
 }
 
+/**
+ * loads all ingredients and passes them to the setIngredients function
+ * @param {function} setIngredients 
+ */
 function loadIngredients(setIngredients) {
   axios({
     method: 'GET',
     url: 'ingredientlist',
   }).then((response) => {
     let res = response.data;
-    console.log(res)
+    // console.log(res)
     setIngredients(res);
   })
   .catch((error)=>{
@@ -160,7 +164,10 @@ const SearchPage = () => {
     }).then((response) => {
       let res = JSON.parse(response.data.results);
       console.log("received "+res.length+" recipes");
-      // console.log("received: "+results[0]['name']);
+      if (results[0]) {
+        console.log("received: "+results[0]['name']);
+        console.log("received: "+results[0]['image_path']);
+      }
       setResults(res);
     })
   }

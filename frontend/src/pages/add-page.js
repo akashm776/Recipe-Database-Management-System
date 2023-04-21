@@ -3,6 +3,7 @@ import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem } from '@mui/material';
 import {Add, Search, DensityMedium, HomeOutlined, Details} from "@mui/icons-material";
+import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
@@ -11,38 +12,25 @@ const maxUtensils = 100;
 const maxIngredients = 100;
 const imageDir = "../frontend/public/images/";
 
-function uploadImage(file) {
+function addRecipe(image, recipe) {
   let formdata = new FormData();
-  formdata.append("image", file);
-  axios.post("upload",formdata, {
+  if (image !== null) {
+    formdata.append("image", image);
+  }
+
+  // images need to use formdata, which don't mix with the data section
+  // we must convert the object to formdata key/value pairs
+  for (var prop in recipe) {
+    // console.log(prop);
+    formdata.append(prop, recipe[prop]);
+  }
+
+  axios.post("newrecipe",formdata, {
     headers: {
       "Content-Type": "multipart/form-data",
     }
-  });
-  
-  // axios({
-  //   method: 'POST',
-  //   url: 'upload',
-  //   headers: {
-  //     "Content-Type": "multipart/form-data",
-  //   },
-  //   data: {
-  //     file: formdata
-  //   }
-  // })
-}
-
-function addRecipe(newRecipe) {
-  axios({
-    method: 'POST',
-    url: 'newrecipe',
-    data: {
-      recipe: newRecipe
-    }
-  }).then((response) => {
-    //let recipeID = JSON.parse(response.data.results);
-    //console.log(recipeID);
-    console.log(response.data)
+  }).then((response)=>{
+    console.log(response.data);
   });
 }
 
@@ -63,6 +51,7 @@ const AddPage = () => {
     const [details, setDetails] = useState([Array(maxIngredients).fill(null)]);
     const [ingredientsActive, setIngredientsActive] = useState([Array(maxIngredients).map((a, i) => boxLogicInit(i))]);
     const [nextIngredient, setNextIngredient] = useState(1);
+    const [fileValue, setFileValue] = useState(''); // this is used so we have ability to clear the image
 
 
     const drawerItems = [
@@ -165,7 +154,6 @@ const AddPage = () => {
       }
       const recipeObj = {
         name: title,
-        image_path: "", // TODO
         energy: energy,
         utensils: uArray,
         ingredients: iArray,
@@ -196,8 +184,8 @@ const AddPage = () => {
       }
 
       console.log(JSON.stringify(recipeObj));
-
-      addRecipe(JSON.stringify(recipeObj));
+      // addRecipe(JSON.stringify(recipeObj));
+      addRecipe(currentImage, recipeObj);
     }
 
     function addUtensil() {
@@ -257,7 +245,6 @@ const AddPage = () => {
           </Drawer>
         </div>
 
-        {/* <div className="imageUpload" sx={{width:'300px', height:'300px'}}> */}
         <Box className="imageUpload" sx={{display:'table-cell', width:'300px', height:'100px'}}>
           <label htmlFor="btn-upload">
             <input
@@ -266,6 +253,7 @@ const AddPage = () => {
               style={{ display: 'none' }}
               type="file"
               accept="image/*"
+              value={fileValue}
               onChange={selectFile} />
             <Button
               className="btn-choose"
@@ -274,19 +262,20 @@ const AddPage = () => {
                 Choose Image
             </Button>
           </label>
-          <img src={imagePreview} alt="" style={{width:'300px', maxHeight:'300px'}} />
-          <div className="file-name">
-            {currentImage ? currentImage.name : null}
-          </div>
+
           <Button
-            className="btn-upload"
+            className="btn-cancel"
             color="primary"
             variant="contained"
             component="span"
             disabled={!currentImage}
-            onClick={()=>uploadImage(currentImage)}>
-            Upload
+            onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
+            <ClearIcon />
           </Button>
+          <img src={imagePreview} alt="" style={{width:'300px', maxHeight:'300px'}} />
+          <div className="file-name">
+            {currentImage ? currentImage.name : null}
+          </div>
         </Box>
 
         <div>
