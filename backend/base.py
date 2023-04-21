@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from pymongo.collation import Collation
 from pymongo import ReturnDocument
+import random
 import re
 import os
 import json
@@ -234,16 +235,23 @@ def handle_upload():
 
     print(data)
     # TODO verify dictionary keys before blindly inserting them
-    # TODO reject if name overlaps
+
     if 'image' in request.files.keys():
         image = request.files['image']
 
         filename = secure_filename(image.filename)
         path = IMAGE_DIR+filename
 
-        if filename == "" or os.path.exists(path):
-            pass
-            # TODO create random filename
+        if filename == "": # secure_filename can return empty string in worst case
+            return "Bad filename"
+
+        while os.path.exists(path):
+            # make up random filename
+            file_extension = filename.split('.')[-1]
+            alphanumeric = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+            filename = ''.join(random.choices(list(alphanumeric), k=16)) + "." + file_extension
+            path = IMAGE_DIR+filename
         
         image.save(path)
         print(f"file saved to {path}")
