@@ -158,7 +158,7 @@ def index():
     sortBy = data["sort"]
     good_ingredients = data["include_ingredients"]
     bad_ingredients = data["exclude_ingredients"]
-    #print(name)
+    print(data)
     #print(good_ingredients)
     #print(bad_ingredients)
 
@@ -216,6 +216,8 @@ def listOfIngredients():
         for ingredient in recipe['ingredients']:
             ingredients.append(ingredient['name'])
     return ingredients
+
+
 
 
 
