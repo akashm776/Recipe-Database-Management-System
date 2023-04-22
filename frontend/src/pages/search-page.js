@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
 import TextField from '@mui/material/TextField';
@@ -7,15 +7,16 @@ import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbo
 import { Container } from '@mui/system';
 import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
-function ResultList({ results }) {
-    const navigate = useNavigate();
+function ResultList({ results, cardLink }) {
     return (
       <Container>
         <Grid container spacing={1} alignItems="center">
           {results.map((recipe, index) => {
             return (
               <Grid key={index} item xs={4}>
-                <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385, maxWidth : 385, minHeight : 285, maxHeight : 285 }} variant='outlined' onClick={() => navigate("/view-recipe")}>
+                <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385,
+                    maxWidth : 385, minHeight : 285, maxHeight : 285 }}
+                    variant='outlined' onClick={() => cardLink(recipe._id)}>
                   <CardHeader title={recipe.name} titleTypographyProps={{variant : 'h6'}}/>
                   <CardMedia 
                     sx={{height:150}}
@@ -141,6 +142,8 @@ function loadIngredients(setIngredients) {
 
 const SearchPage = () => {
   const navigate = useNavigate();
+  const [redirect, setRedirect] = useState(false);
+  const [linkRecipeId, setLinkRecipeId] = useState("");
   const [searchBarText, setSearchBarText] = useState("");
   const [sortBy, setSortBy] = useState("alphabetical"); // default value
   const [goodIngredients, setGoodIngredients] = useState([])
@@ -193,6 +196,11 @@ const SearchPage = () => {
     setSortBy(event.target.value);
   }
 
+  function handleCardLink(rid) {
+    setLinkRecipeId(rid);
+    setRedirect(true);
+  }
+
 
   const drawerItems = [
     { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
@@ -213,7 +221,9 @@ const SearchPage = () => {
     </div>
   );
   
-  return (
+  return redirect ?
+    <Navigate to="/view-recipe" replace={true} state={{rid: {linkRecipeId}}} />
+    :(
     <div className="App">
       <div className="searchRow" style={{display:'flex', margin:'12px'}}>
         <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
@@ -243,7 +253,7 @@ const SearchPage = () => {
       {/* <p>PosFilter: <b>{goodIngredients}</b></p>
       <p>NegFilter: <b>{badIngredients}</b></p> */}
       <p>Search results for: <b>{searchedFor}</b></p>
-      <ResultList results={results}/>
+      <ResultList results={results} cardLink={handleCardLink}/>
     </div>
   );
 }

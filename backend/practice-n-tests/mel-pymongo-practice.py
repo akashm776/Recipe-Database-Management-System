@@ -27,6 +27,8 @@ posts = db.posts
 posts.delete_many({}) # delete all entries in database
 post_id = posts.insert_one(post).inserted_id
 print(post_id)
+print("id type:")
+print(type(post_id))
 
 print(db.list_collection_names())
 print()

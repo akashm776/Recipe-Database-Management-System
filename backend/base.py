@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from pymongo.collation import Collation
 from pymongo import ReturnDocument
+from bson.objectid import ObjectId
 import random
 import re
 import os
@@ -50,8 +51,7 @@ def convert_to_json(cursor):
     #print(json)
     for entry in json:
         # _id field contains an object, which doesn't readily convert to JSON
-        entry.pop("_id")
-        #entry['date_added'] = entry['date_added'].timestamp()
+        entry["_id"] = str(entry["_id"])
     json = str(json).replace("'", '"')  # using ' instead of " will break it
     return json
 
@@ -84,6 +84,18 @@ def sort(cursor, sort):
 def listOfIngredients():
     ingredients = recipes.find().distinct("ingredients.name")
     return json.dumps(ingredients)
+
+@app.route("/fetchrecipe", methods=["POST"])
+def fetchRecipe():
+    data = request.get_json()
+    rid = data["rid"]
+    recRes = recipes.find_one({"_id": ObjectId(rid["linkRecipeId"])})
+    recRes["_id"] = str(recRes["_id"])
+    jsonRecipe = str(dict(recRes)).replace("'", '"')
+    response_body = {
+        "results": jsonRecipe
+    }
+    return response_body
 
 
 @app.route("/newrecipe", methods=["POST"])
