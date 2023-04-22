@@ -23,16 +23,12 @@ recipes = db['recipes']
 @app.route("/query", methods=['POST'])
 def index():
     data = request.get_json()
-    name = data["name"]
-    sortBy = data["sort"]
-    good_ingredients = data["include_ingredients"]
-    bad_ingredients = data["exclude_ingredients"]
     #print(name)
     #print(good_ingredients)
     #print(bad_ingredients)
 
-    cursor = search(name, good_ingredients, bad_ingredients)
-    cursor = sort(cursor, sortBy)
+    cursor = search(data)
+    cursor = sort(cursor, data["sort"])
     #print(type(cursor))
 
     response_body = {
@@ -56,12 +52,28 @@ def convert_to_json(cursor):
     return json
 
 
-def search(name, good_ingredients, bad_ingredients):
+def search(data):
+    name = data["name"]
     regx = re.compile(".*" + re.escape(name), re.IGNORECASE)
-    if len(good_ingredients) > 0: # note that the $all condition will be false when good_ingredients is empty, so we need a check
-        return recipes.find({"$and":[{"name":regx},{"ingredients.name":{"$all": good_ingredients}},{"ingredients.name":{"$nin": bad_ingredients}}]})
-    else:
-        return recipes.find({"$and":[{"name":regx},{"ingredients.name":{"$nin": bad_ingredients}}]})
+    
+    search_filters = [{"name":regx}]
+
+    if len(data["ingredients"]["include"]) > 0:
+        search_filters.append({"ingredients.name":{"$all": data["ingredients"]["include"]}})
+    if len(data["ingredients"]["exclude"]) > 0:
+        search_filters.append({"ingredients.name":{"$nin": data["ingredients"]["exclude"]}})
+
+    if len(data["energy"]["include"]) > 0:
+        search_filters.append({"energy":{"$all": data["energy"]["include"]}})
+    if len(data["energy"]["exclude"]) > 0:
+        search_filters.append({"energy":{"$nin": data["energy"]["exclude"]}})
+
+    if len(data["meal_type"]["include"]) > 0:
+        search_filters.append({"meal_type":{"$all": data["meal_type"]["include"]}})
+    if len(data["meal_type"]["exclude"]) > 0:
+        search_filters.append({"meal_type":{"$nin": data["meal_type"]["exclude"]}})
+    
+    return recipes.find({"$and":search_filters})
 
 def sort(cursor, sort):
     match sort:
