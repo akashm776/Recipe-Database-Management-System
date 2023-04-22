@@ -84,7 +84,7 @@ def reset_db():
     6) Bake for 8-10 minutes''',
                         'views': 4,
                         'date_added': int(time.mktime((2022, 11, 15, 15, 22, 50, 1, 319, -1)) * 1000),
-                        'image_path': '/images/beef-stew.jpg'
+                        'image_path': '/images/snickerdoodles.jpg'
                         })
 
     recipes.insert_one({'name': 'Slow Cooker Honey Teriyaki Chicken',
