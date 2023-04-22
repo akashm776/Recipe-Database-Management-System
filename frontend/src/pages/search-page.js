@@ -15,15 +15,17 @@ function ResultList({ results }) {
           {results.map((recipe, index) => {
             return (
               <Grid key={index} item xs={4}>
-                <Card sx={{ minWidth: 200, maxWidth: 400 }} variant='outlined' onClick={() => navigate("/view-recipe")}>
-                  <CardHeader title={recipe.name}/>
+                <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385, maxWidth : 385, minHeight : 285, maxHeight : 285 }} variant='outlined' onClick={() => navigate("/view-recipe")}>
+                  <CardHeader title={recipe.name} titleTypographyProps={{variant : 'h6'}}/>
                   <CardMedia 
                     sx={{height:150}}
                     image={recipe['image_path']!==undefined ? recipe['image_path'] : "/istockphoto-612x612.jpg"}
                   />
                   <CardContent>
                     <Typography variant='body2' color='text.secondary'>
-                      placeholder text
+                      Energy Level: {recipe.energy.charAt(0).toUpperCase() + recipe.energy.slice(1)}
+                      <br></br>
+                      Total Time to Cook (in mins): {recipe.time_mins}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -214,7 +216,7 @@ const SearchPage = () => {
           {getDrawerList()}
         </Drawer>
         <TextField 
-          className="searchbar" label="Search" 
+          className="searchbar" label="Search for a Recipe" 
           onChange={handleChange} onKeyDown={handleKeyDown} 
           style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus />
         <Button 
