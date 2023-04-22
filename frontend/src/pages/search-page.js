@@ -152,13 +152,18 @@ const SearchPage = () => {
   
   useEffect(()=>loadIngredients(setIngredients), []) // this function will only be called on initial page load
 
-  function search(recipeName) {
-    setSearchedFor(recipeName)
+  // this will search any time any of the listed variables are updated
+  useEffect(()=>{
+    search();
+  },[searchBarText, sortBy, goodIngredients, badIngredients]);
+
+  function search() {
+    setSearchedFor(searchBarText)
     axios({
       method: 'POST',
       url: 'query',
       data: {
-        name: recipeName,
+        name: searchBarText,
         sort: sortBy,
         include_ingredients: goodIngredients,
         exclude_ingredients: badIngredients
@@ -178,16 +183,16 @@ const SearchPage = () => {
     setSearchBarText(event.target.value);
   }
 
-  function handleKeyDown(event) {
+  function handleKeyDown(event) { // TODO remove
     if (event.key === "Enter") {
-      search(searchBarText);
+      search(); 
     }
   }
 
   function handleSortByChange(event) {
     setSortBy(event.target.value);
-    search(searchedFor);
   }
+
 
   const drawerItems = [
     { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
