@@ -224,12 +224,12 @@ const SearchPage = () => {
           className="searchbar" label="Search for a Recipe" 
           onChange={handleChange} onKeyDown={handleKeyDown} 
           style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus />
-        <Button 
+        {/* <Button 
           className='searchButton' 
           onClick={()=>{search(searchBarText)}} 
           style={{flex:'none', marginRight:'4px'}} variant='contained' >
             <Search />
-        </Button>
+        </Button> */}
         <Select 
           className='sortSelect' label="Sort by"
           value={sortBy}
