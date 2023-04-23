@@ -3,9 +3,26 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton } from '@mui/material';
+import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton, Stack } from '@mui/material';
 import { Container } from '@mui/system';
 import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
+
+
+// value: value stored in database
+// display: checkbox label
+const energyLevels = [
+  {value:'easy',       display:'Easy'},
+  {value:'moderate',   display:'Moderate'},
+  {value:'difficult',  display:'Difficult'},
+];
+
+const mealTypes = [
+  {value:'breakfast',  display:'Breakfast'},
+  {value:'lunch',      display:'Lunch'},
+  {value:'dinner',     display:'Dinner'},
+  {value:'side dish',  display:'Side Dish'}, 
+  {value:'sweets',     display:'Sweets'},
+];
 
 function ResultList({ results, cardLink }) {
     return (
@@ -38,14 +55,14 @@ function ResultList({ results, cardLink }) {
     )
 }
 
-function TriStateCheckbox({ onChange, label }) {
+function TriStateCheckbox({ onChange, label, value }) {
   // 0 is blank, 1 is checked, 2 is checked with minus
   const [state, setState] = useState(0);
 
   function handleCheckboxClick() {
     let newState = (state+1)%3;
     setState(newState);
-    onChange(label, newState);
+    onChange(value, newState);
   };
 
   return (
@@ -61,7 +78,7 @@ function TriStateCheckbox({ onChange, label }) {
   );
 }
 
-function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
+function CheckBoxList({ title, items, includes, setIncludes, excludes, setExcludes }) {
 
   function updateFilters(item, newState) {
     switch (newState) {
@@ -83,40 +100,15 @@ function FilterList({ items, includes, setIncludes, excludes, setExcludes }) {
   }
 
   return (
-    <div style={{display:'flex', margin:'12px'}}>
-      {/* {items.map((item, index)=>{
-        return (
-          <TriStateCheckbox label={item} onChange={updateFilters}/>
-        )
-      })} */}
-      <Autocomplete
-        style={{flex:'auto', marginRight:'4px'}}
-        value={includes}
-        onChange={(event, newVal) => {setIncludes(newVal)}}
-        multiple
-        options={items}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Included Ingredients"
-            placeholder="Type an ingredient"
-          />
-        )}
-      />
-      <Autocomplete
-        style={{flex:'auto'}}
-        value={excludes}
-        onChange={(event, newVal) => {setExcludes(newVal)}}
-        multiple
-        options={items}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Excluded Ingredients"
-            placeholder="Type an ingredient"
-          />
-        )}
-      />
+    <div>
+      <Typography variant='h6'>{title}</Typography>
+      <Stack direction='column'>
+        {items.map((item, index)=>{
+          return (
+            <TriStateCheckbox label={item.display} value={item.value} onChange={updateFilters}/>
+          )
+        })}
+      </Stack>
     </div>
   )
 }
@@ -148,6 +140,10 @@ const SearchPage = () => {
   const [sortBy, setSortBy] = useState("alphabetical"); // default value
   const [goodIngredients, setGoodIngredients] = useState([])
   const [badIngredients, setBadIngredients] = useState([])
+  const [goodEnergy, setGoodEnergy] = useState([]);
+  const [badEnergy, setBadEnergy] = useState([]);
+  const [goodMealTypes, setGoodMealTypes] = useState([]);
+  const [badMealTypes, setBadMealTypes] = useState([]);
   const [searchedFor, setSearchedFor] = useState("");
   const [results, setResults] = useState([]);
   const [ingredients, setIngredients] = useState(["loading ingredients..."]);
@@ -158,7 +154,7 @@ const SearchPage = () => {
   // this will search any time any of the listed variables are updated
   useEffect(()=>{
     search();
-  },[searchBarText, sortBy, goodIngredients, badIngredients]);
+  },[searchBarText, sortBy, goodIngredients, badIngredients, goodEnergy, badEnergy, goodMealTypes, badMealTypes]);
 
   function search() {
     setSearchedFor(searchBarText)
@@ -168,8 +164,9 @@ const SearchPage = () => {
       data: {
         name: searchBarText,
         sort: sortBy,
-        include_ingredients: goodIngredients,
-        exclude_ingredients: badIngredients
+        ingredients: {"include":goodIngredients, "exclude":badIngredients},
+        energy: {"include":goodEnergy, "exclude":badEnergy},
+        meal_type: {"include":goodMealTypes, "exclude":badMealTypes},
       }
     }).then((response) => {
       let res = JSON.parse(response.data.results);
@@ -182,20 +179,11 @@ const SearchPage = () => {
     })
   }
 
-  function handleChange(event) {
-    setSearchBarText(event.target.value);
-  }
-
   function handleKeyDown(event) { // TODO remove
     if (event.key === "Enter") {
       search(); 
     }
   }
-
-  function handleSortByChange(event) {
-    setSortBy(event.target.value);
-  }
-
   function handleCardLink(rid) {
     setLinkRecipeId(rid);
     setRedirect(true);
@@ -232,7 +220,7 @@ const SearchPage = () => {
         </Drawer>
         <TextField 
           className="searchbar" label="Search for a Recipe" 
-          onChange={handleChange} onKeyDown={handleKeyDown} 
+          onChange={(event)=>setSearchBarText(event.target.value)} onKeyDown={handleKeyDown} 
           style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus />
         {/* <Button 
           className='searchButton' 
@@ -243,16 +231,67 @@ const SearchPage = () => {
         <Select 
           className='sortSelect' label="Sort by"
           value={sortBy}
-          onChange={handleSortByChange} >
+          onChange={(event)=>setSortBy(event.target.value)} >
             <MenuItem value="alphabetical">Alphabetical</MenuItem>
             <MenuItem value="date">Date Added</MenuItem>
             <MenuItem value="views">Views</MenuItem>
         </Select>
       </div>
-      <FilterList items={ingredients} setItems={setIngredients} includes={goodIngredients} setIncludes={setGoodIngredients} excludes={badIngredients} setExcludes={setBadIngredients} />
-      {/* <p>PosFilter: <b>{goodIngredients}</b></p>
-      <p>NegFilter: <b>{badIngredients}</b></p> */}
-      <p>Search results for: <b>{searchedFor}</b></p>
+      {/* <div className='secondRow' style={{display:'flex', margin:'12px'}}> */}
+      <Stack direction='row' justifyContent='space-evenly' margin='12px'>
+        <Stack direction='column'>
+          <Autocomplete
+            // maxWidth
+            // style={{flex:'auto', marginRight:'4px'}}
+            sx={{width:'70vw'}}
+            value={goodIngredients}
+            onChange={(event, newVal) => {setGoodIngredients(newVal)}}
+            multiple
+            options={ingredients}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Included Ingredients"
+                placeholder="Type an ingredient"
+              />
+            )}
+          />
+          <Autocomplete
+            maxWidth
+            // style={{flex:'auto'}}
+            value={badIngredients}
+            onChange={(event, newVal) => {setBadIngredients(newVal)}}
+            multiple
+            options={ingredients}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Excluded Ingredients"
+                placeholder="Type an ingredient"
+              />
+            )}
+          />
+        </Stack>
+        <Stack direction='row'>
+          <CheckBoxList title="Energy" items={energyLevels} includes={goodEnergy} setIncludes={setGoodEnergy} excludes={badEnergy} setExcludes={setBadEnergy} />
+          <CheckBoxList title="Meal Type" items={mealTypes} includes={goodMealTypes} setIncludes={setGoodMealTypes} excludes={badMealTypes} setExcludes={setBadMealTypes} />
+        </Stack>
+      {/* </div> */}
+      </Stack>
+
+      {/* <div className="thirdRow" style={{display:'flex', margin:'12px'}}>
+        <Select 
+          className='energySelect' label="Energy"
+          value={energy}
+          onChange={(event)=>setEnergy(event.target.value)} >
+            <MenuItem value="alphabetical">Alphabetical</MenuItem>
+            <MenuItem value="date">Date Added</MenuItem>
+            <MenuItem value="views">Views</MenuItem>
+        </Select>
+      </div> */}
+      {/* <p>PosFilter: <b>{goodEnergy}</b></p>
+      <p>NegFilter: <b>{badEnergy}</b></p> */}
+      {/* <p>Search results for: <b>{searchedFor}</b></p> */}
       <ResultList results={results} cardLink={handleCardLink}/>
     </div>
   );
