@@ -2,7 +2,7 @@ from flask import Flask, request
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from pymongo.collation import Collation
-from pymongo import ReturnDocument
+from bson.objectid import ObjectId
 import random
 import re
 import os
@@ -23,22 +23,13 @@ recipes = db['recipes']
 @app.route("/query", methods=['POST'])
 def index():
     data = request.get_json()
-    name = data["name"]
-    sortBy = data["sort"]
-    good_ingredients = data["include_ingredients"]
-    bad_ingredients = data["exclude_ingredients"]
-    #print(name)
-    #print(good_ingredients)
-    #print(bad_ingredients)
 
-    cursor = search(name, good_ingredients, bad_ingredients)
-    cursor = sort(cursor, sortBy)
-    #print(type(cursor))
+    cursor = search(data)
+    cursor = sort(cursor, data["sort"])
 
     response_body = {
         "results": convert_to_json(cursor)
     }
-    #print()
     #print(response_body['results'])
     return response_body
 
@@ -50,18 +41,38 @@ def convert_to_json(cursor):
     #print(json)
     for entry in json:
         # _id field contains an object, which doesn't readily convert to JSON
-        entry.pop("_id")
-        #entry['date_added'] = entry['date_added'].timestamp()
+        entry["_id"] = str(entry["_id"])
     json = str(json).replace("'", '"')  # using ' instead of " will break it
     return json
 
 
-def search(name, good_ingredients, bad_ingredients):
+def search(data):
+    name = data["name"]
     regx = re.compile(".*" + re.escape(name), re.IGNORECASE)
-    if len(good_ingredients) > 0: # note that the $all condition will be false when good_ingredients is empty, so we need a check
-        return recipes.find({"$and":[{"name":regx},{"ingredients.name":{"$all": good_ingredients}},{"ingredients.name":{"$nin": bad_ingredients}}]})
-    else:
-        return recipes.find({"$and":[{"name":regx},{"ingredients.name":{"$nin": bad_ingredients}}]})
+    
+    search_filters = [{"name":regx}]
+
+    if len(data["ingredients"]["include"]) > 0:
+        search_filters.append({"ingredients.name":{"$all": data["ingredients"]["include"]}})
+    if len(data["ingredients"]["exclude"]) > 0:
+        search_filters.append({"ingredients.name":{"$nin": data["ingredients"]["exclude"]}})
+
+    if len(data["energy"]["include"]) > 0:
+        search_filters.append({"energy":{"$all": data["energy"]["include"]}})
+    if len(data["energy"]["exclude"]) > 0:
+        search_filters.append({"energy":{"$nin": data["energy"]["exclude"]}})
+
+    if len(data["meal_type"]["include"]) > 0:
+        search_filters.append({"meal_type":{"$all": data["meal_type"]["include"]}})
+    if len(data["meal_type"]["exclude"]) > 0:
+        search_filters.append({"meal_type":{"$nin": data["meal_type"]["exclude"]}})
+
+    if data["time_mins"][0] > 0:
+        search_filters.append({"time_mins":{"$gte": data["time_mins"][0]}})
+    if data["time_mins"][1] > 0:
+        search_filters.append({"time_mins":{"$lte": data["time_mins"][1]}})
+    
+    return recipes.find({"$and":search_filters})
 
 def sort(cursor, sort):
     match sort:
@@ -85,10 +96,28 @@ def listOfIngredients():
     ingredients = recipes.find().distinct("ingredients.name")
     return json.dumps(ingredients)
 
+@app.route("/fetchrecipe", methods=["POST"])
+def fetchRecipe():
+    data = request.get_json()
+    rid = data["rid"]
+    recRes = recipes.find_one({"_id": ObjectId(rid["linkRecipeId"])})
+    recRes["_id"] = str(recRes["_id"])
+    jsonRecipe = str(dict(recRes)).replace("'", '"')
+    response_body = {
+        "results": jsonRecipe
+    }
+    return response_body
+
 
 @app.route("/newrecipe", methods=["POST"])
-def handle_upload():
+def new_recipe():
     data = dict(request.form)
+
+    # convert some fields to ints (formdata doesn't support sending ints)
+    intfields = ['date_added', 'views', 'time_mins']
+    for field in intfields:
+        if field in data.keys():
+            data[field] = int(data[field])
 
     print(data)
     # TODO verify dictionary keys before blindly inserting them

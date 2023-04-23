@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem } from '@mui/material';
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem, Paper, Stack, Grid } from '@mui/material';
 import {Add, Search, DensityMedium, HomeOutlined, Details} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
@@ -110,8 +110,8 @@ const AddPage = () => {
     }
 
     function selectFile(event) {
-      setCurrentImage(event.target.files[0])
-      setImagePreview(URL.createObjectURL(event.target.files[0]))
+      setCurrentImage(event.target.files[0]);
+      setImagePreview(URL.createObjectURL(event.target.files[0]));
     }
 
     function handleSave() {
@@ -124,7 +124,7 @@ const AddPage = () => {
       
       // currently Title is the only mandatory info
       if (typeof(title) !== "string" || title.length === 0) {
-        // maybe show an error message to indicate why recipe wasn't saved
+        alert("Please enter a recipe title");
         return;
       }
 
@@ -158,30 +158,24 @@ const AddPage = () => {
         utensils: uArray,
         ingredients: iArray,
         views: 0,
-        date_added: Date.now()
+        date_added: Date.now(),
+        instructions: "",
       };
 
       // add time to cook
-      // TODO: disallow non-numerical input
-      if (typeof(time) === "string" && time.length > 0) {
+      if (time > 0) {
         recipeObj.time_mins = time;
-      } else {
-        recipeObj.time_mins = "";
       }
 
       // add meat type
       if (typeof(mealType) === "string" && mealType.length > 0) {
         recipeObj.meal_type = mealType;
-      } else {
-        recipeObj.meal_type = "";
-      }
+      } 
 
       // add directions
       if (typeof(directions) === "string" && directions.length > 0) {
         recipeObj.instructions = directions;
-      } else {
-        recipeObj.instructions = "";
-      }
+      } 
 
       console.log(JSON.stringify(recipeObj));
       // addRecipe(JSON.stringify(recipeObj));
@@ -206,8 +200,17 @@ const AddPage = () => {
       setEnergy(event.target.value);
     }
 
+    const [timeError, setTimeError] = useState(false);
+
     function handleTimeChange(event) {
-      setTime(event.target.value);
+      let num = Number(event.target.value);
+      if (isNaN(num)) {
+        setTimeError(true);
+        return;
+      }
+
+      setTime(num);
+      if (timeError) {setTimeError(false)}
     }
 
     function handleMealTypeChange(event) {
@@ -245,38 +248,46 @@ const AddPage = () => {
           </Drawer>
         </div>
 
-        <Box className="imageUpload" sx={{display:'table-cell', width:'300px', height:'100px'}}>
-          <label htmlFor="btn-upload">
-            <input
-              id="btn-upload"
-              name="btn-upload"
-              style={{ display: 'none' }}
-              type="file"
-              accept="image/*"
-              value={fileValue}
-              onChange={selectFile} />
-            <Button
-              className="btn-choose"
-              variant="outlined"
-              component="span" >
-                Choose Image
-            </Button>
-          </label>
+        <Paper className="imageUpload" height={2} sx={{padding:'12px', display:'table-cell', width:'300px', height:'100px'}}>
+          <Grid container spacing={1} justifyContent='center'>
+            <Grid item >
+            <label htmlFor="btn-upload">
+              <input
+                id="btn-upload"
+                name="btn-upload"
+                style={{ display: 'none' }}
+                type="file"
+                accept="image/*"
+                value={fileValue}
+                onChange={selectFile} />
+              <Button
+                className="btn-choose"
+                variant="outlined"
+                component="span" >
+                  Choose Image
+              </Button>
+            </label>
+            </Grid>
 
-          <Button
-            className="btn-cancel"
-            color="primary"
-            variant="contained"
-            component="span"
-            disabled={!currentImage}
-            onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
-            <ClearIcon />
-          </Button>
-          <img src={imagePreview} alt="" style={{width:'300px', maxHeight:'300px'}} />
-          <div className="file-name">
-            {currentImage ? currentImage.name : null}
-          </div>
-        </Box>
+            <Grid item >
+              <Button
+                className="btn-cancel"
+                color="primary"
+                variant="contained"
+                style={{flex:'none'}}
+                disabled={!currentImage}
+                onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
+                <ClearIcon />
+              </Button>
+            </Grid>
+            <Grid item >
+              <img src={imagePreview} alt="" style={{width:'100%', maxHeight:'300px'}} />
+            </Grid>
+            <Grid item className="file-name">
+              {currentImage ? currentImage.name : null}
+            </Grid>
+          </Grid>
+        </Paper>
 
         <div>
           <TextField 
@@ -294,7 +305,7 @@ const AddPage = () => {
           </Select>
           &emsp;
           <TextField 
-            label="Time in Minutes" onChange={handleTimeChange}
+            label="Time in Minutes" error={timeError} onChange={handleTimeChange}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
           <br /><br />
           <TextField 
