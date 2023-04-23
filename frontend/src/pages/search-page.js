@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton, Stack } from '@mui/material';
+import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton, Stack, Paper } from '@mui/material';
 import { Container } from '@mui/system';
 import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
@@ -26,32 +26,31 @@ const mealTypes = [
 
 function ResultList({ results, cardLink }) {
     return (
-      <Container>
-        <Grid container spacing={1} alignItems="center">
-          {results.map((recipe, index) => {
-            return (
-              <Grid key={index} item xs={4}>
-                <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385,
-                    maxWidth : 385, minHeight : 285, maxHeight : 285 }}
-                    variant='outlined' onClick={() => cardLink(recipe._id)}>
-                  <CardHeader title={recipe.name} titleTypographyProps={{variant : 'h6'}}/>
-                  <CardMedia 
-                    sx={{height:150}}
-                    image={recipe['image_path']!==undefined ? recipe['image_path'] : "/istockphoto-612x612.jpg"}
-                  />
-                  <CardContent>
-                    <Typography variant='body2' color='text.secondary'>
-                      Energy Level: {recipe.energy.charAt(0).toUpperCase() + recipe.energy.slice(1)}
-                      <br></br>
-                      Total Time to Cook (in mins): {recipe.time_mins}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            )
-          })}
-        </Grid>
-      </Container>
+      <Grid container spacing={2} justifyContent="center" alignItems="center">
+        {results.map((recipe, index) => {
+          return (
+            // <Grid key={index} item xs={2} sm={6} md={6} lg={4}>
+            <Grid item key={index}>
+              <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385,
+                  maxWidth : 385, minHeight : 285, maxHeight : 285 }}
+                  variant='outlined' onClick={() => cardLink(recipe._id)}>
+                <CardHeader title={recipe.name} titleTypographyProps={{variant : 'h6'}}/>
+                <CardMedia 
+                  sx={{height:150}}
+                  image={recipe['image_path']!==undefined ? recipe['image_path'] : "/istockphoto-612x612.jpg"}
+                />
+                <CardContent>
+                  <Typography variant='body2' color='text.secondary'>
+                    Energy Level: {recipe.energy.charAt(0).toUpperCase() + recipe.energy.slice(1)}
+                    <br></br>
+                    Total Time to Cook (in mins): {recipe.time_mins}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          )
+        })}
+      </Grid>
     )
 }
 
@@ -224,7 +223,7 @@ const SearchPage = () => {
           style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus />
         {/* <Button 
           className='searchButton' 
-          onClick={()=>{search(searchBarText)}} 
+          onClick={()=>{search()}} 
           style={{flex:'none', marginRight:'4px'}} variant='contained' >
             <Search />
         </Button> */}
@@ -238,12 +237,14 @@ const SearchPage = () => {
         </Select>
       </div>
       {/* <div className='secondRow' style={{display:'flex', margin:'12px'}}> */}
-      <Stack direction='row' justifyContent='space-evenly' margin='12px'>
-        <Stack direction='column'>
+      <Stack direction='row' spacing={5} justifyContent="space-between" margin='12px'>
+        <Stack direction='column' sx={{width:"60%"}}>
+        {/* <Stack direction='column' > */}
           <Autocomplete
-            // maxWidth
+            sx={{width:"100%"}}
             // style={{flex:'auto', marginRight:'4px'}}
-            sx={{width:'70vw'}}
+            style={{marginBottom:'6px'}}
+            // sx={{width:'70vw'}}
             value={goodIngredients}
             onChange={(event, newVal) => {setGoodIngredients(newVal)}}
             multiple
@@ -257,7 +258,7 @@ const SearchPage = () => {
             )}
           />
           <Autocomplete
-            maxWidth
+            sx={{width:"100%"}}
             // style={{flex:'auto'}}
             value={badIngredients}
             onChange={(event, newVal) => {setBadIngredients(newVal)}}
@@ -272,7 +273,8 @@ const SearchPage = () => {
             )}
           />
         </Stack>
-        <Stack direction='row'>
+        {/* <Stack direction='row' sx={{width:'30%'}}> */}
+        <Stack direction='row' >
           <CheckBoxList title="Energy" items={energyLevels} includes={goodEnergy} setIncludes={setGoodEnergy} excludes={badEnergy} setExcludes={setBadEnergy} />
           <CheckBoxList title="Meal Type" items={mealTypes} includes={goodMealTypes} setIncludes={setGoodMealTypes} excludes={badMealTypes} setExcludes={setBadMealTypes} />
         </Stack>
