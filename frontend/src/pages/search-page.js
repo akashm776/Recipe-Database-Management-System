@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton, Stack, Paper } from '@mui/material';
+import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton, Stack, Paper, Box } from '@mui/material';
 import { Container } from '@mui/system';
 import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
@@ -263,15 +263,12 @@ const SearchPage = () => {
             <MenuItem value="views">Views</MenuItem>
         </Select>
       </div>
-      {/* <div className='secondRow' style={{display:'flex', margin:'12px'}}> */}
-      <Stack direction='row' spacing={5} justifyContent="space-between" margin='12px'>
-        <Stack direction='column' spacing={1} sx={{width:"60%"}}>
-        {/* <Stack direction='column' > */}
+
+      <Box sx={{margin:"12px", marginBottom:'24px', padding:"12px"}}>
+      <Stack direction='row' spacing={5} justifyContent="space-between" >
+        <Stack direction='column' spacing={1} sx={{flex:'1', width:"100%"}}>
           <Autocomplete
             sx={{width:"100%"}}
-            // style={{flex:'auto', marginRight:'4px'}}
-            // style={{marginBottom:'6px'}}
-            // sx={{width:'70vw'}}
             value={goodIngredients}
             onChange={(event, newVal) => {setGoodIngredients(newVal)}}
             multiple
@@ -316,13 +313,12 @@ const SearchPage = () => {
               variant="outlined" />
           </Stack>
         </Stack>
-        {/* <Stack direction='row' sx={{width:'30%'}}> */}
         <Stack direction='row' >
           <CheckBoxList title="Energy" items={energyLevels} includes={goodEnergy} setIncludes={setGoodEnergy} excludes={badEnergy} setExcludes={setBadEnergy} />
           <CheckBoxList title="Meal Type" items={mealTypes} includes={goodMealTypes} setIncludes={setGoodMealTypes} excludes={badMealTypes} setExcludes={setBadMealTypes} />
         </Stack>
-      {/* </div> */}
       </Stack>
+      </Box>
 
       {/* <div className="thirdRow" style={{display:'flex', margin:'12px'}}>
         <Select 
