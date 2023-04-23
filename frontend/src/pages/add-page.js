@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem } from '@mui/material';
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem, Paper, Stack, Grid } from '@mui/material';
 import {Add, Search, DensityMedium, HomeOutlined, Details} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
@@ -110,8 +110,8 @@ const AddPage = () => {
     }
 
     function selectFile(event) {
-      setCurrentImage(event.target.files[0])
-      setImagePreview(URL.createObjectURL(event.target.files[0]))
+      setCurrentImage(event.target.files[0]);
+      setImagePreview(URL.createObjectURL(event.target.files[0]));
     }
 
     function handleSave() {
@@ -241,7 +241,6 @@ const AddPage = () => {
 
     return (
       <div className="App">
-        <p>{time}</p>
         <div className="searchRow" style={{display:'flex', margin:'12px'}}>
           <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
           <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
@@ -249,38 +248,46 @@ const AddPage = () => {
           </Drawer>
         </div>
 
-        <Box className="imageUpload" sx={{display:'table-cell', width:'300px', height:'100px'}}>
-          <label htmlFor="btn-upload">
-            <input
-              id="btn-upload"
-              name="btn-upload"
-              style={{ display: 'none' }}
-              type="file"
-              accept="image/*"
-              value={fileValue}
-              onChange={selectFile} />
-            <Button
-              className="btn-choose"
-              variant="outlined"
-              component="span" >
-                Choose Image
-            </Button>
-          </label>
+        <Paper className="imageUpload" height={2} sx={{padding:'12px', display:'table-cell', width:'300px', height:'100px'}}>
+          <Grid container spacing={1} justifyContent='center'>
+            <Grid item >
+            <label htmlFor="btn-upload">
+              <input
+                id="btn-upload"
+                name="btn-upload"
+                style={{ display: 'none' }}
+                type="file"
+                accept="image/*"
+                value={fileValue}
+                onChange={selectFile} />
+              <Button
+                className="btn-choose"
+                variant="outlined"
+                component="span" >
+                  Choose Image
+              </Button>
+            </label>
+            </Grid>
 
-          <Button
-            className="btn-cancel"
-            color="primary"
-            variant="contained"
-            component="span"
-            disabled={!currentImage}
-            onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
-            <ClearIcon />
-          </Button>
-          <img src={imagePreview} alt="" style={{width:'300px', maxHeight:'300px'}} />
-          <div className="file-name">
-            {currentImage ? currentImage.name : null}
-          </div>
-        </Box>
+            <Grid item >
+              <Button
+                className="btn-cancel"
+                color="primary"
+                variant="contained"
+                style={{flex:'none'}}
+                disabled={!currentImage}
+                onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
+                <ClearIcon />
+              </Button>
+            </Grid>
+            <Grid item >
+              <img src={imagePreview} alt="" style={{width:'100%', maxHeight:'300px'}} />
+            </Grid>
+            <Grid item className="file-name">
+              {currentImage ? currentImage.name : null}
+            </Grid>
+          </Grid>
+        </Paper>
 
         <div>
           <TextField 
