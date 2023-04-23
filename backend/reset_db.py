@@ -23,7 +23,8 @@ def reset_db():
     4) Oil a pan using the olive oil and, over medium heat, give each meatball a couple minutes of cooking on 3 sides. I know they’re spheres and don’t have sides.
     5) Transfer the half-cooked meatballs to a foil-lined baking tray and bake for 20 minutes or until the insides are up to temp.''',
                         'views': 1,
-                        'date_added': int(time.mktime((2023, 3, 26, 6, 36, 48, 6, 85, -1)) * 1000)
+                        'date_added': int(time.mktime((2023, 3, 26, 6, 36, 48, 6, 85, -1)) * 1000),
+                        'image_path': '/images/meatball.jpg'
                         })
 
     recipes.insert_one({'name': 'Brownies',
@@ -42,7 +43,8 @@ def reset_db():
     7) Bake for 20-25 minutes- check using the toothpick method
     8) Eat and burn your mouth because you forgot to let them cool''',
                         'views': 3,
-                        'date_added': current_time
+                        'date_added': current_time,
+                        'image_path': '/images/brownie.jpg'
                         })
 
     recipes.insert_one({'name': 'Slow Cooker Mashed Potatoes',
@@ -58,7 +60,8 @@ def reset_db():
     4) Remove the lid and mash the potatoes, mixing in the milk as you go.
     5) Eat''',
                         'views': 1,
-                        'date_added': int(time.mktime((2022, 4, 13, 23, 2, 27, 2, 103, -1)) * 1000)
+                        'date_added': int(time.mktime((2022, 4, 13, 23, 2, 27, 2, 103, -1)) * 1000),
+                        'image_path': '/images/mashed-potatoes.jpg'
                         })
 
     recipes.insert_one({'name': 'Snickerdoodles',
@@ -66,9 +69,9 @@ def reset_db():
                                         {'name': 'cream of tartar', 'notes': '2tsp'},
                                         {'name': 'salt', 'notes': '1/2 tsp'},
                                         {'name': 'baking powder', 'notes': '1 tsp'},
-                                        {'nane': 'unsalted butter', 'notes': '1 cup'},
-                                        {'nane': 'eggs', 'notes': '2'},
-                                        {'nane': 'vanilla extract', 'notes': '1 tsp'}],
+                                        {'name': 'unsalted butter', 'notes': '1 cup'},
+                                        {'name': 'eggs', 'notes': '2'},
+                                        {'name': 'vanilla extract', 'notes': '1 tsp'}],
                         'time_mins': 20,
                         'energy': 'moderate',
                         'meal_type': 'sweets',
@@ -80,7 +83,8 @@ def reset_db():
     5) Scoop out dough and roll into a ball. Roll the ball into the cinnamon sugar coating and set onto an ungreased baking sheet 2 inches apart.
     6) Bake for 8-10 minutes''',
                         'views': 4,
-                        'date_added': int(time.mktime((2022, 11, 15, 15, 22, 50, 1, 319, -1)) * 1000)
+                        'date_added': int(time.mktime((2022, 11, 15, 15, 22, 50, 1, 319, -1)) * 1000),
+                        'image_path': '/images/snickerdoodles.jpg'
                         })
 
     recipes.insert_one({'name': 'Slow Cooker Honey Teriyaki Chicken',
@@ -108,7 +112,8 @@ def reset_db():
     8) Serve on top of rice.
     ''',
                         'views': 8,
-                        'date_added': int(time.mktime((2021, 1, 1, 1, 1, 1, 4, 1, -1)) * 1000) # Converted to UNIX time
+                        'date_added': int(time.mktime((2021, 1, 1, 1, 1, 1, 4, 1, -1)) * 1000), # Converted to UNIX time
+                        'image_path': '/images/honey-teriyaki.jpeg'
                         })
 
     recipes.insert_one({'name': 'Slow Cooker Beef Stew',
@@ -148,7 +153,8 @@ def reset_db():
     6) Serve.
     ''',
                         'views': 2,
-                        'date_added': int(time.mktime((1993, 8, 7, 0, 2, 17, 5, 219, -1)) * 1000) # Converted to UNIX time
+                        'date_added': int(time.mktime((1993, 8, 7, 0, 2, 17, 5, 219, -1)) * 1000), # Converted to UNIX time
+                        'image_path': '/images/beef-stew.jpg'
                         })
     client.close()
 
