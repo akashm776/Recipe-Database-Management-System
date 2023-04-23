@@ -209,6 +209,31 @@ const SearchPage = () => {
       ))}
     </div>
   );
+
+  const [minTimeError, setMinTimeError] = useState(false);
+  const [maxTimeError, setMaxTimeError] = useState(false);
+
+  function handleTimeChange(event, field) {
+    if (field !== "max" && field !== "min") {
+      throw("Bad name passed to handleTimeChange");
+    }
+
+    if (isNaN(Number(event.target.value))) {
+      if (field === "min"){
+        setMinTimeError(true);
+      } else {
+        setMaxTimeError(true);
+      }
+      return;
+    }
+    if (field === "min"){
+      setTimeRange([Number(event.target.value), timeRange[1]]);
+      if (minTimeError) {setMinTimeError(false)}
+    } else{
+      setTimeRange([timeRange[0], Number(event.target.value)]);
+      if (maxTimeError) {setMaxTimeError(false)}
+    } 
+  }
   
   return redirect ?
     <Navigate to="/view-recipe" replace={true} state={{rid: {linkRecipeId}}} />
@@ -277,15 +302,17 @@ const SearchPage = () => {
           <Stack direction='row' spacing={1} alignItems='center'>
             <Typography variant='h6' >Time</Typography>
             <TextField 
-              fullWidth
               label="Min" 
-              onChange={(event)=>setTimeRange([Number(event.target.value), timeRange[1]])}
+              onChange={(event)=>handleTimeChange(event, 'min')}
+              error={minTimeError}
+              fullWidth
               variant="outlined" />
             <Typography variant="h4"> - </Typography>
             <TextField 
-              fullWidth
               label="Max" 
-              onChange={(event)=>setTimeRange([timeRange[0], Number(event.target.value)])}
+              onChange={(event)=>handleTimeChange(event, 'max')}
+              error={maxTimeError}
+              fullWidth
               variant="outlined" />
           </Stack>
         </Stack>
@@ -310,6 +337,7 @@ const SearchPage = () => {
       {/* <p>PosFilter: <b>{goodEnergy}</b></p>
       <p>NegFilter: <b>{badEnergy}</b></p> */}
       {/* <p>Search results for: <b>{searchedFor}</b></p> */}
+      <p>{timeRange}</p>
       <ResultList results={results} cardLink={handleCardLink}/>
     </div>
   );
