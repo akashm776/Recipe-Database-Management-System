@@ -2,7 +2,6 @@ from flask import Flask, request
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from pymongo.collation import Collation
-from pymongo import ReturnDocument
 from bson.objectid import ObjectId
 import random
 import re
@@ -24,18 +23,13 @@ recipes = db['recipes']
 @app.route("/query", methods=['POST'])
 def index():
     data = request.get_json()
-    #print(name)
-    #print(good_ingredients)
-    #print(bad_ingredients)
 
     cursor = search(data)
     cursor = sort(cursor, data["sort"])
-    #print(type(cursor))
 
     response_body = {
         "results": convert_to_json(cursor)
     }
-    #print()
     #print(response_body['results'])
     return response_body
 
@@ -116,8 +110,14 @@ def fetchRecipe():
 
 
 @app.route("/newrecipe", methods=["POST"])
-def handle_upload():
+def new_recipe():
     data = dict(request.form)
+
+    # convert some fields to ints (formdata doesn't support sending ints)
+    intfields = ['date_added', 'views', 'time_mins']
+    for field in intfields:
+        if field in data.keys():
+            data[field] = int(data[field])
 
     print(data)
     # TODO verify dictionary keys before blindly inserting them

@@ -124,7 +124,7 @@ const AddPage = () => {
       
       // currently Title is the only mandatory info
       if (typeof(title) !== "string" || title.length === 0) {
-        // maybe show an error message to indicate why recipe wasn't saved
+        alert("Please enter a recipe title");
         return;
       }
 
@@ -158,30 +158,24 @@ const AddPage = () => {
         utensils: uArray,
         ingredients: iArray,
         views: 0,
-        date_added: Date.now()
+        date_added: Date.now(),
+        instructions: "",
       };
 
       // add time to cook
-      // TODO: disallow non-numerical input
-      if (typeof(time) === "string" && time.length > 0) {
+      if (time > 0) {
         recipeObj.time_mins = time;
-      } else {
-        recipeObj.time_mins = "";
       }
 
       // add meat type
       if (typeof(mealType) === "string" && mealType.length > 0) {
         recipeObj.meal_type = mealType;
-      } else {
-        recipeObj.meal_type = "";
-      }
+      } 
 
       // add directions
       if (typeof(directions) === "string" && directions.length > 0) {
         recipeObj.instructions = directions;
-      } else {
-        recipeObj.instructions = "";
-      }
+      } 
 
       console.log(JSON.stringify(recipeObj));
       // addRecipe(JSON.stringify(recipeObj));
@@ -206,8 +200,17 @@ const AddPage = () => {
       setEnergy(event.target.value);
     }
 
+    const [timeError, setTimeError] = useState(false);
+
     function handleTimeChange(event) {
-      setTime(event.target.value);
+      let num = Number(event.target.value);
+      if (isNaN(num)) {
+        setTimeError(true);
+        return;
+      }
+
+      setTime(num);
+      if (timeError) {setTimeError(false)}
     }
 
     function handleMealTypeChange(event) {
@@ -238,6 +241,7 @@ const AddPage = () => {
 
     return (
       <div className="App">
+        <p>{time}</p>
         <div className="searchRow" style={{display:'flex', margin:'12px'}}>
           <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
           <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
@@ -294,7 +298,7 @@ const AddPage = () => {
           </Select>
           &emsp;
           <TextField 
-            label="Time in Minutes" onChange={handleTimeChange}
+            label="Time in Minutes" error={timeError} onChange={handleTimeChange}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
           <br /><br />
           <TextField 
