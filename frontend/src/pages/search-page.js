@@ -137,13 +137,14 @@ const SearchPage = () => {
   const [linkRecipeId, setLinkRecipeId] = useState("");
   const [searchBarText, setSearchBarText] = useState("");
   const [sortBy, setSortBy] = useState("alphabetical"); // default value
+  const [timeRange, setTimeRange] = useState([0,0]);
   const [goodIngredients, setGoodIngredients] = useState([])
   const [badIngredients, setBadIngredients] = useState([])
   const [goodEnergy, setGoodEnergy] = useState([]);
   const [badEnergy, setBadEnergy] = useState([]);
   const [goodMealTypes, setGoodMealTypes] = useState([]);
   const [badMealTypes, setBadMealTypes] = useState([]);
-  const [searchedFor, setSearchedFor] = useState("");
+  const [searchedFor, setSearchedFor] = useState(""); // TODO remove if not used
   const [results, setResults] = useState([]);
   const [ingredients, setIngredients] = useState(["loading ingredients..."]);
 
@@ -153,7 +154,7 @@ const SearchPage = () => {
   // this will search any time any of the listed variables are updated
   useEffect(()=>{
     search();
-  },[searchBarText, sortBy, goodIngredients, badIngredients, goodEnergy, badEnergy, goodMealTypes, badMealTypes]);
+  },[searchBarText, sortBy, goodIngredients, badIngredients, goodEnergy, badEnergy, goodMealTypes, badMealTypes, timeRange]);
 
   function search() {
     setSearchedFor(searchBarText)
@@ -163,6 +164,7 @@ const SearchPage = () => {
       data: {
         name: searchBarText,
         sort: sortBy,
+        time_mins: timeRange,
         ingredients: {"include":goodIngredients, "exclude":badIngredients},
         energy: {"include":goodEnergy, "exclude":badEnergy},
         meal_type: {"include":goodMealTypes, "exclude":badMealTypes},
@@ -238,12 +240,12 @@ const SearchPage = () => {
       </div>
       {/* <div className='secondRow' style={{display:'flex', margin:'12px'}}> */}
       <Stack direction='row' spacing={5} justifyContent="space-between" margin='12px'>
-        <Stack direction='column' sx={{width:"60%"}}>
+        <Stack direction='column' spacing={1} sx={{width:"60%"}}>
         {/* <Stack direction='column' > */}
           <Autocomplete
             sx={{width:"100%"}}
             // style={{flex:'auto', marginRight:'4px'}}
-            style={{marginBottom:'6px'}}
+            // style={{marginBottom:'6px'}}
             // sx={{width:'70vw'}}
             value={goodIngredients}
             onChange={(event, newVal) => {setGoodIngredients(newVal)}}
@@ -272,6 +274,20 @@ const SearchPage = () => {
               />
             )}
           />
+          <Stack direction='row' spacing={1} alignItems='center'>
+            <Typography variant='h6' >Time</Typography>
+            <TextField 
+              fullWidth
+              label="Min" 
+              onChange={(event)=>setTimeRange([Number(event.target.value), timeRange[1]])}
+              variant="outlined" />
+            <Typography variant="h4"> - </Typography>
+            <TextField 
+              fullWidth
+              label="Max" 
+              onChange={(event)=>setTimeRange([timeRange[0], Number(event.target.value)])}
+              variant="outlined" />
+          </Stack>
         </Stack>
         {/* <Stack direction='row' sx={{width:'30%'}}> */}
         <Stack direction='row' >

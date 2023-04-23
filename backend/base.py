@@ -72,6 +72,11 @@ def search(data):
         search_filters.append({"meal_type":{"$all": data["meal_type"]["include"]}})
     if len(data["meal_type"]["exclude"]) > 0:
         search_filters.append({"meal_type":{"$nin": data["meal_type"]["exclude"]}})
+
+    if data["time_mins"][0] > 0:
+        search_filters.append({"time_mins":{"$gte": data["time_mins"][0]}})
+    if data["time_mins"][1] > 0:
+        search_filters.append({"time_mins":{"$lte": data["time_mins"][1]}})
     
     return recipes.find({"$and":search_filters})
 
