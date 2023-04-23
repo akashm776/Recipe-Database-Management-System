@@ -55,7 +55,7 @@ const AddPage = () => {
 
 
     const drawerItems = [
-      { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
+      // { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
       { name: "Search Recipes", icon: <Search />, action:() => navigate("/") },
       { name: "New Recipe", icon: <Add />, action:() => navigate("/add-recipe") },
     ];

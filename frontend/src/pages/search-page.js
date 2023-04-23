@@ -15,7 +15,7 @@ function ResultList({ results }) {
           {results.map((recipe, index) => {
             return (
               <Grid key={index} item xs={4}>
-                <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385, maxWidth : 385, minHeight : 285, maxHeight : 285 }} variant='outlined' onClick={() => navigate("/view-recipe")}>
+                <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385, maxWidth : 385, minHeight : 285, maxHeight : 285, borderWidth : '2px', boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)'}} variant='outlined' onClick={() => navigate("/view-recipe")}>
                   <CardHeader title={recipe.name} titleTypographyProps={{variant : 'h6'}}/>
                   <CardMedia 
                     sx={{height:150}}
@@ -195,7 +195,7 @@ const SearchPage = () => {
 
 
   const drawerItems = [
-    { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
+    // { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
     { name: "Search Recipes", icon: <Search />, action:() => navigate("/") },
     { name: "New Recipe", icon: <Add />, action:() => navigate("/add-recipe") },
   ];
