@@ -337,7 +337,6 @@ const SearchPage = () => {
       {/* <p>PosFilter: <b>{goodEnergy}</b></p>
       <p>NegFilter: <b>{badEnergy}</b></p> */}
       {/* <p>Search results for: <b>{searchedFor}</b></p> */}
-      <p>{timeRange}</p>
       <ResultList results={results} cardLink={handleCardLink}/>
     </div>
   );
