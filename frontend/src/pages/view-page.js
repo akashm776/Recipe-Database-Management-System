@@ -107,7 +107,7 @@ const ViewPage = () => {
           {/* <h1 style={{textAlign : 'center'}}>{recName}</h1> */}
           <Grid container direction="column" alignItems="center" justify="center">
             <Grid item>
-              <img src={recImage}/>
+              <img src={recImage} style={{maxWidth:'25%', height:'auto'}}/>
             </Grid>
             <Grid item>
               <Typography variant="h2" align="center">{recName}</Typography>
@@ -135,7 +135,7 @@ const ViewPage = () => {
           <hr />
           <h2>Directions:</h2>
 
-            <ul style={{listStylePosition:'outside', margin:"auto", textAlign:"justify", verticalAlign:"middle", display:'inline-block', listStyleType:'none'}}>
+            <ul style={{listStylePosition:'inside', margin:"auto", textAlign:"justify", verticalAlign:"middle", display:'inline-block', listStyleType:'none'}}>
                 {recDirections.split("\n").map((instruction) => (
                   <li>{instruction}</li>
                 ))}
