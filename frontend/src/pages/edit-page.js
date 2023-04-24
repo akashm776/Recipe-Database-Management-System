@@ -127,9 +127,11 @@ const EditPage = () => {
     function loadUtensils(utensilsToLoad) {
       for (let i = 0; i < utensilsToLoad.length - 1; i++) {
         utensils[i] = utensilsToLoad[i];
-        utensilsActive[i + 1] = 1;
+        if (i !== utensilsToLoad.length - 2) {
+          utensilsActive[i + 1] = 1;
+        }
       }
-      setNextUtensil(utensilsToLoad.length);
+      setNextUtensil(utensilsToLoad.length - 1);
       
     }
 
