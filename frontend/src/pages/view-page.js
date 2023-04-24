@@ -107,7 +107,7 @@ const ViewPage = () => {
           {/* <h1 style={{textAlign : 'center'}}>{recName}</h1> */}
           <Grid container direction="column" alignItems="center" justify="center">
             <Grid item>
-              <img src={recImage}/>
+              <img src={recImage} style={{maxWidth:'25%', height:'auto'}}/>
             </Grid>
             <Grid item>
               <Typography variant="h2" align="center">{recName}</Typography>

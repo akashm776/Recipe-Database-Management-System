@@ -113,7 +113,7 @@ def reset_db():
     ''',
                         'views': 8,
                         'date_added': int(time.mktime((2021, 1, 1, 1, 1, 1, 4, 1, -1)) * 1000), # Converted to UNIX time
-                        'image_path': '/images/honey-teriyaki.jpeg'
+                        'image_path': '/images/teriyaki-chicken.jpeg'
                         })
 
     recipes.insert_one({'name': 'Slow Cooker Beef Stew',
