@@ -29,8 +29,8 @@ const EditPage = () => {
     const [time, setTime] = useState("");
     const [mealType, setMealType] = useState("");
     const [directions, setDirections] = useState("");
-    const [utensils, setUtensils] = useState([Array(maxUtensils).fill(null)]);
-    const [utensilsActive, setUtensilsActive] = useState([Array(maxUtensils).map((a, i) => boxLogicInit(i))]);
+    const [utensils, setUtensils] = useState(Array(1).fill(""));
+    const [utensilsActive, setUtensilsActive] = useState(Array(1).fill(1));
     const [nextUtensil, setNextUtensil] = useState(1);
     const [ingredients, setIngredients] = useState([Array(maxIngredients).fill(null)]);
     const [details, setDetails] = useState([Array(maxIngredients).fill(null)]);
@@ -74,7 +74,7 @@ const EditPage = () => {
       return (
         <li key={i}>
           <br />
-          <TextField label={uLabel} onChange={event => handleUtensilChange(event, i)}
+          <TextField label={uLabel} value={utensils[i]} onChange={event => handleUtensilChange(event, i)}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
         </li>
       )
@@ -115,10 +115,20 @@ const EditPage = () => {
         setTitle(currentRecipe.name);
         setEnergy(currentRecipe.energy);
         setMealType(currentRecipe.meal_type);
+        loadUtensils(currentRecipe.utensils);
         setTime(currentRecipe.time_mins);
         setDirections(currentRecipe.instructions);
-        console.log("viewing recipe: " + currentRecipe.name);
+        console.log("editing recipe: " + currentRecipe.name);
       })
+    }
+
+    function loadUtensils(utensilsToLoad) {
+      for (let i = 0; i < utensilsToLoad.length - 1; i++) {
+        utensils[i] = utensilsToLoad[i];
+        utensilsActive[i + 1] = 1;
+      }
+      setNextUtensil(utensilsToLoad.length);
+      
     }
 
     function handleSuccessfulEdit() {
