@@ -136,7 +136,6 @@ const EditPage = () => {
     function loadImage(imagePath) {
       let localImage = new Image();
       localImage.src = imagePath; // I doubt this will work when saving to database
-      document.body.appendChild(localImage);
       console.log("Loaded server image:");
       console.log(localImage);
       setCurrentImage(localImage);
