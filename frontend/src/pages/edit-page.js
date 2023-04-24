@@ -118,6 +118,7 @@ const EditPage = () => {
         loadUtensils(currentRecipe.utensils);
         setTime(currentRecipe.time_mins);
         setDirections(currentRecipe.instructions);
+        loadImage(currentRecipe.image_path);
         console.log("editing recipe: " + currentRecipe.name);
       })
     }
@@ -129,6 +130,11 @@ const EditPage = () => {
       }
       setNextUtensil(utensilsToLoad.length);
       
+    }
+
+    function loadImage(imagePath) {
+      //setCurrentImage(event.target.files[0]);
+      //setImagePreview(URL.createObjectURL(event.target.files[0]));
     }
 
     function handleSuccessfulEdit() {
