@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {useState} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField } from '@mui/material';
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField, Grid, Typography, Stack } from '@mui/material';
 import {Add, Edit, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
 const ViewPage = () => {
@@ -72,6 +72,7 @@ const ViewPage = () => {
         setRecType(currentRecipe.meal_type);
         setRecViews(currentRecipe.views);
         setRecUtensils(currentRecipe.utensils);
+        currentRecipe.ingredients.forEach(element => console.log("ingredient: " + String(element.name) +  "\t" + "details: " + String(element.notes)));
         setRecIngredients(currentRecipe.ingredients);
         setRecDirections(currentRecipe.instructions);
         setRecImage(currentRecipe.image_path);
@@ -81,6 +82,12 @@ const ViewPage = () => {
 
     function parseDirections(directions) {
       
+    }
+
+    function titleCase(str) {
+      return str.toLowerCase().split(' ').map(function (word) {
+        return (word.charAt(0).toUpperCase() + word.slice(1));
+      }).join(' ');
     }
 
     return redirect ?
@@ -97,15 +104,43 @@ const ViewPage = () => {
           </Drawer>
         </div>
         <div>
-          <h1>{recName} <img src={recImage}/></h1>
-          <h2>Energy: {recEnergy} <br />Time: {recTime} min
-          <br />Meal type: {recType}
-          <br />Views: {recViews}</h2>
+          {/* <h1 style={{textAlign : 'center'}}>{recName}</h1> */}
+          <Grid container direction="column" alignItems="center" justify="center">
+            <Grid item>
+              <img src={recImage}/>
+            </Grid>
+            <Grid item>
+              <Typography variant="h2" align="center">{recName}</Typography>
+            </Grid>
+          </Grid>
+          <h2>Energy: {recEnergy.charAt(0).toUpperCase() + recEnergy.slice(1)} <br />Time: {recTime} min
+          <br />Meal Type: {recType.charAt(0).toUpperCase() + recType.slice(1)}
+          <br /># of Views: {recViews}</h2>
           <hr />
-          <h2>Utensils: {recUtensils.join(", ")}</h2>
-          <h2>Ingredients: { /* TODO */ }</h2>
+          <h2>Utensils: {recUtensils.map((str) => titleCase(str)).join(", ")}</h2>
+          <h2>Ingredients:</h2>
+            
+          <Grid container style={{direction:'column', alignItems:'center', justify:'center', textAlign:'center', display:'inline-block'}}>
+          
+            <Grid item>
+            <ul style={{listStylePosition:'inside', marginLeft:0}}>
+              {recIngredients.map((ingredient) => (
+                <Grid item> <li>{ingredient.name} &rarr; {ingredient.notes}</li> </Grid>
+              ))}
+            </ul>
+            </Grid>
+
+          </Grid>
+
           <hr />
-          <h2>Directions:<br />{recDirections}</h2>
+          <h2>Directions:</h2>
+
+            <ul style={{textAlign:'center', listStylePosition:'inside', marginLeft:0}}>
+                {recDirections.split("\n").map((instruction) => (
+                  <li>{instruction}</li>
+                ))}
+            </ul>
+
         </div>
       </div>
     )
