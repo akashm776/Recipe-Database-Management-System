@@ -120,10 +120,10 @@ const ViewPage = () => {
           <h2>Utensils: {recUtensils.map((str) => titleCase(str)).join(", ")}</h2>
           <h2>Ingredients:</h2>
             
-          <Grid container style={{direction:'column', alignItems:'center', justify:'center', textAlign:'center', display:'inline-block'}}>
+          <Grid container style={{direction:'column', alignItems:'flex-start', justify:'center', textAlign:'left', display:'inline-block'}}>
           
             <Grid item>
-            <ul style={{listStylePosition:'inside', marginLeft:0}}>
+            <ul style={{listStylePosition:'inside', margin:"auto", textAlign:"justify", verticalAlign:"middle", position: 'relative', display:'table'}}>
               {recIngredients.map((ingredient) => (
                 <Grid item> <li>{ingredient.name} &rarr; {ingredient.notes}</li> </Grid>
               ))}
@@ -135,7 +135,7 @@ const ViewPage = () => {
           <hr />
           <h2>Directions:</h2>
 
-            <ul style={{textAlign:'center', listStylePosition:'inside', marginLeft:0}}>
+            <ul style={{listStylePosition:'inside', margin:"auto", textAlign:"justify", verticalAlign:"middle", display:'inline-block'}}>
                 {recDirections.split("\n").map((instruction) => (
                   <li>{instruction}</li>
                 ))}
