@@ -135,7 +135,7 @@ const ViewPage = () => {
           <hr />
           <h2>Directions:</h2>
 
-            <ul style={{listStylePosition:'inside', margin:"auto", textAlign:"justify", verticalAlign:"middle", display:'inline-block'}}>
+            <ul style={{listStylePosition:'inside', margin:"auto", textAlign:"justify", verticalAlign:"middle", display:'inline-block', listStyleType:'none'}}>
                 {recDirections.split("\n").map((instruction) => (
                   <li>{instruction}</li>
                 ))}
