@@ -1,7 +1,8 @@
 import React from 'react';
 import {useState} from 'react';
+import {useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem, Paper, Stack, Grid } from '@mui/material';
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem, Paper, Stack, Grid, Autocomplete } from '@mui/material';
 import {Add, Search, DensityMedium, HomeOutlined, Details} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
@@ -24,7 +25,6 @@ function addRecipe(image, recipe) {
     // console.log(prop);
     formdata.append(prop, recipe[prop]);
   }
-
   axios.post("newrecipe",formdata, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -33,6 +33,26 @@ function addRecipe(image, recipe) {
     console.log(response.data);
   });
 }
+
+/**
+ * loads all ingredients and passes them to the setIngredients function
+ * @param {function} setIngredients 
+ */
+function loadIngredients(setIngredients) {
+  axios({
+    method: 'GET',
+    url: 'ingredientlist',
+  }).then((response) => {
+    let res = response.data;
+    // console.log(res)
+    setIngredients(res);
+  })
+  .catch((error)=>{
+    console.log("Query for all ingredients gave: "+error.message+ "\ntrying again in 3 seconds");
+    setTimeout(()=>loadIngredients(setIngredients), 3000);
+  })
+}
+
 
 const AddPage = () => {
     const navigate = useNavigate();
@@ -52,7 +72,9 @@ const AddPage = () => {
     const [ingredientsActive, setIngredientsActive] = useState([Array(maxIngredients).map((a, i) => boxLogicInit(i))]);
     const [nextIngredient, setNextIngredient] = useState(1);
     const [fileValue, setFileValue] = useState(''); // this is used so we have ability to clear the image
+    //const [ingredients, setIngredients] = useState(["loading ingredients..."]);
 
+    useEffect(()=>loadIngredients(setIngredients), []) // this function will only be called on initial page load
 
     const drawerItems = [
       // { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
@@ -90,13 +112,37 @@ const AddPage = () => {
       return (
         <li key={i}>
           <br />
-          <TextField 
+          {/* <TextField 
             label={iLabel} onChange={event => handleIngredientChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-          &ensp;
-          <TextField 
-            label={dLabel} onChange={event => handleDetailChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel /> */}
+          {/* <Box sx={{justifyContent: 'auto'}}> */}
+            {/* <Stack justifyContent= 'center' spaceing= '2'> */}
+              <Grid container direction="column" alignItems="center" justify="center">
+                <Grid item sx={{width:"15%"}}>
+                  <Autocomplete
+                  // sx={{width:"15%"}}
+                  freeSolo
+                  options={ingredients}
+                  onChange={event => handleIngredientChange(event, i)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={iLabel}
+                      style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel
+                      placeholder="Type an ingredient"
+                    />
+                  )}
+                  />
+                </Grid>
+                <Grid item sx={{width:"15%"}}>
+                    &ensp;
+                    <TextField 
+                    label={dLabel} onChange={event => handleDetailChange(event, i)}
+                    style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
+                </Grid>
+              </Grid>
+            {/* </Stack> */}
+      {/* </Box> */}
         </li>
       )
     });
