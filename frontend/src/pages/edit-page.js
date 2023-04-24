@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import {useState} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField, Select, MenuItem, Paper, Stack, Grid } from '@mui/material';
-import {Add, DinnerDining, Search, DensityMedium} from "@mui/icons-material";
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField, Select, MenuItem, Paper, Stack, Grid, Snackbar } from '@mui/material';
+import MuiAlert from "@mui/material/Alert";
+import {Add, DinnerDining, Search, DensityMedium, Delete} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
 
@@ -273,6 +274,24 @@ const EditPage = () => {
       setDetails(newDetails);
     }
 
+    const [open, setOpen] = React.useState(false);
+
+    const Alert = React.forwardRef(function Alert(props, ref) {
+      return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+  
+    const handleClick = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+  
+      setOpen(false);
+    };
+
     return  redirect ?
     <Navigate to="/view-recipe" replace={true} state={{rid: {linkRecipeId}}} />
     :(
@@ -379,9 +398,21 @@ const EditPage = () => {
         </div>
         <div>
           <Button onClick={handleSave} variant="outlined">Save</Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Button
+        variant="contained"
+        color="error"
+        startIcon={<Delete />}
+        onClick={handleClick}
+      >
+        Delete Recipe
+      </Button>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Deleted "{title}"
+        </Alert>
+      </Snackbar>
         </div>
-        
-        {/* </div> */}
       </div>
     )
 }
