@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {useState} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField } from '@mui/material';
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField, Select, MenuItem } from '@mui/material';
 import {Add, DinnerDining, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
 
 const EditPage = () => {
@@ -14,6 +14,11 @@ const EditPage = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [linkRecipeId, setLinkRecipeId] = useState("");
     const [recName, setRecName] = useState("");
+    const [recTime, setRecTime] = useState("");
+    const [recEnergy, setRecEnergy] = useState("");
+    const [recMealType, setRecMealType] = useState("");
+    const [recDirections, setRecDirections] = useState("");
+
     let currentRecipe;
     
     const drawerItems = [
@@ -59,6 +64,10 @@ const EditPage = () => {
         let res = JSON.parse(response.data.results);
         currentRecipe = res;
         setRecName(currentRecipe.name);
+        setRecEnergy(currentRecipe.energy);
+        setRecMealType(currentRecipe.meal_type);
+        setRecTime(currentRecipe.time_mins);
+        setRecDirections(currentRecipe.instructions);
         console.log("viewing recipe: " + currentRecipe.name);
       })
     }
@@ -70,7 +79,32 @@ const EditPage = () => {
     function handleTitleChange(event) {
       setRecName(event.target.value);
     }
-      
+    
+    const [timeError, setRecTimeError] = useState(false);
+
+    function handleTimeChange(event) {
+      let num = Number(event.target.value);
+      if (isNaN(num)) {
+        setRecTimeError(true);
+        return;
+      }
+
+      setRecTime(num);
+      if (timeError) {setRecTimeError(false)}
+    }
+
+    function handleMealTypeChange(event) {
+      setRecMealType(event.target.value);
+    }
+
+    function handleRecEnergyChange(event) {
+      setRecEnergy(event.target.value);
+    }
+
+    function handleDirectionsChange(event) {
+      setRecDirections(event.target.value);
+    }
+
     return  redirect ?
     <Navigate to="/view-recipe" replace={true} state={{rid: {linkRecipeId}}} />
     :(
@@ -88,6 +122,31 @@ const EditPage = () => {
         <TextField 
             label="Title" value={recName} onChange={handleTitleChange}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
+        <br></br>
+        <br></br>
+        <TextField 
+            label="Meal Type" value={recMealType} onChange={handleMealTypeChange}
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
+        <br></br>
+        <br></br>
+        Energy:&ensp;
+        <Select 
+            value={recEnergy} 
+            onChange={handleRecEnergyChange} >
+              <MenuItem value="Easy">Easy</MenuItem>
+              <MenuItem value="Moderate">Moderate</MenuItem>
+              <MenuItem value="Difficult">Difficult</MenuItem>
+        </Select>
+        <br></br>
+        <br></br>
+        <TextField 
+            label="Time to Cook" value={recTime} onChange={handleTimeChange}
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
+        <br></br>
+        <br></br>
+        <TextField 
+            label="Directions" value={recDirections} onChange={handleDirectionsChange}
+            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel multiline />
         </div>
       </div>
     )
