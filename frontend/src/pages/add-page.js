@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem, Paper, Stack, Grid } from '@mui/material';
 import {Add, Search, DensityMedium, HomeOutlined, Details} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
@@ -242,7 +242,9 @@ const AddPage = () => {
     return (
       <div className="App">
         <div className="searchRow" style={{display:'flex', margin:'12px'}}>
-          <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
+          <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}>
+            <IconButton><DensityMedium/></IconButton>
+          </Button>
           <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
             {getDrawerList()}
           </Drawer>
