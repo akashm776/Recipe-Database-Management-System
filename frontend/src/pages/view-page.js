@@ -3,7 +3,7 @@ import {useState} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField, Grid, Typography, Stack } from '@mui/material';
-import {Add, Edit, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
+import {Add, Edit, Search, DensityMedium} from "@mui/icons-material";
 
 const ViewPage = () => {
     const navigate = useNavigate();
@@ -25,7 +25,7 @@ const ViewPage = () => {
     let currentRecipe;
 
     const drawerItems = [
-      { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
+      //{ name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
       { name: "Search Recipes", icon: <Search />, action:() => navigate("/") },
       { name: "New Recipe", icon: <Add />, action:() => navigate("/add-recipe") },
       { name: "Edit Recipe", icon: <Edit />, action:() => handleEditLink() },

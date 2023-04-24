@@ -14,7 +14,7 @@ def reset_db():
                         'ingredients': [{'name': 'ground beef', 'notes': '1lb, preferrably 80%% or above'},
                                         {'name': 'mild sausage', 'notes': '1/2lb'}],
                         'time_mins': 45,
-                        'energy': 'moderate',
+                        'energy': 'Moderate',
                         'meal_type': 'dinner',
                         'utensils': ['measuring spoons', '1 bowl', 'stovetop', 'pan', 'baking sheet'],
                         'instructions': '''1) Preheat Oven to 400℉
@@ -31,7 +31,7 @@ def reset_db():
                         'ingredients': [{'name': 'semi sweet chocolate', 'notes': '8oz, chopped'},
                                         {'name': 'butter', 'notes': '12tbsp, melted'}],
                         'time_mins': 45,
-                        'energy': 'moderate',
+                        'energy': 'Moderate',
                         'meal_type': 'sweets',
                         'utensils': ['measuring spoons', '1 bowl', 'stovetop', '8x8 pan', 'spatula', 'parchment paper', 'whisk', 'some patience'],
                         'instructions': '''1) Preheat Oven to 350℉
@@ -51,7 +51,7 @@ def reset_db():
                         'ingredients': [{'name': 'potatoes', 'notes': '4lbs'},
                                         {'name': 'butter', 'notes': '1 1/2cups'}],
                         'time_mins': 240,
-                        'energy': 'moderate',
+                        'energy': 'Moderate',
                         'meal_type': 'side dish',
                         'utensils': ['measuring spoons', 'cutting board', 'slow cooker', 'knife'],
                         'instructions': '''1) Peel and dice potatoes into ~1in cubes
@@ -73,7 +73,7 @@ def reset_db():
                                         {'name': 'eggs', 'notes': '2'},
                                         {'name': 'vanilla extract', 'notes': '1 tsp'}],
                         'time_mins': 20,
-                        'energy': 'moderate',
+                        'energy': 'Moderate',
                         'meal_type': 'sweets',
                         'utensils': ['measuring spoons', '2 bowls', 'stove', 'baking sheet'],
                         'instructions': '''1) Preheat Oven to 350℉
@@ -99,7 +99,7 @@ def reset_db():
                                         {'name': 'corn flour', 'notes': '3 tbsp'},
                                         {'name': 'water', 'notes': '1/4 cup'}, ],
                         'time_mins': 260,
-                        'energy': 'easy',
+                        'energy': 'Easy',
                         'meal_type': 'dinner',
                         'utensils': ['measuring spoons', 'slow cooker', 'spoon'],
                         'instructions': '''1) Reminder to set your rice to cook if serving over rice.
@@ -142,7 +142,7 @@ def reset_db():
                                         {'name': 'cold water', 'notes': '1/4 cup'},
                                         {'name': 'cornstarch', 'notes': '3 tbsp'}, ],
                         'time_mins': 260,
-                        'energy': 'moderate',
+                        'energy': 'Moderate',
                         'meal_type': 'dinner',
                         'utensils': ['measuring spoons', '1 bowl', 'crock pot', 'knife', 'cutting board'],
                         'instructions': '''1) Cut meat, potatoes, onions, and carrots into 1” pieces.
