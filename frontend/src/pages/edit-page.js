@@ -133,8 +133,13 @@ const EditPage = () => {
     }
 
     function loadImage(imagePath) {
-      //setCurrentImage(event.target.files[0]);
-      //setImagePreview(URL.createObjectURL(event.target.files[0]));
+      let localImage = new Image();
+      localImage.src = imagePath; // I doubt this will work when saving to database
+      document.body.appendChild(localImage);
+      console.log("Loaded server image:");
+      console.log(localImage);
+      setCurrentImage(localImage);
+      setImagePreview(imagePath);
     }
 
     function handleSuccessfulEdit() {
@@ -152,6 +157,8 @@ const EditPage = () => {
     function selectFile(event) {
       setCurrentImage(event.target.files[0]);
       setImagePreview(URL.createObjectURL(event.target.files[0]));
+      console.log("Selected image:");
+      console.log(currentImage);
     }
 
     function handleSave() {
