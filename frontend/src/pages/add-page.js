@@ -9,8 +9,6 @@ import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 
-const maxUtensils = 100;
-const maxIngredients = 100;
 const imageDir = "../frontend/public/images/";
 
 function addRecipe(image, recipe) {
@@ -20,11 +18,9 @@ function addRecipe(image, recipe) {
   }
 
   // images need to use formdata, which don't mix with the data section
-  // we must convert the object to formdata key/value pairs
-  for (var prop in recipe) {
-    // console.log(prop);
-    formdata.append(prop, recipe[prop]);
-  }
+  // so we just add the string into the formdata
+  formdata.append("data", JSON.stringify(recipe));
+
   axios.post("newrecipe",formdata, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -64,17 +60,13 @@ const AddPage = () => {
     const [time, setTime] = useState(0);
     const [mealType, setMealType] = useState(null);
     const [directions, setDirections] = useState(null);
-    const [utensils, setUtensils] = useState([Array(maxUtensils).fill(null)]);
-    const [utensilsActive, setUtensilsActive] = useState([Array(maxUtensils).map((a, i) => boxLogicInit(i))]);
-    const [nextUtensil, setNextUtensil] = useState(1);
-    const [ingredients, setIngredients] = useState([Array(maxIngredients).fill(null)]);
-    const [details, setDetails] = useState([Array(maxIngredients).fill(null)]);
-    const [ingredientsActive, setIngredientsActive] = useState([Array(maxIngredients).map((a, i) => boxLogicInit(i))]);
-    const [nextIngredient, setNextIngredient] = useState(1);
+    const [utensils, setUtensils] = useState([""]);
+    const [ingredients, setIngredients] = useState([""]);
+    const [DBingredients, setDBIngredients] = useState([]);
+    const [details, setDetails] = useState([]);
     const [fileValue, setFileValue] = useState(''); // this is used so we have ability to clear the image
-    //const [ingredients, setIngredients] = useState(["loading ingredients..."]);
 
-    useEffect(()=>loadIngredients(setIngredients), []) // this function will only be called on initial page load
+    useEffect(()=>loadIngredients(setDBIngredients), []) // this function will only be called on initial page load
 
     const drawerItems = [
       // { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
@@ -93,19 +85,20 @@ const AddPage = () => {
       </div>
     );
 
-    const utensilBoxes = utensilsActive.map((thingy, i) => {
+    const utensilBoxes = utensils.map((thingy, i) => {
       let uLabel = "Utensil " + (i + 1);
 
       return (
         <li key={i}>
           <br />
-          <TextField label={uLabel} onChange={event => handleUtensilChange(event, i)}
+          <TextField label={uLabel} onChange={(event) => handleUtensilChange(event.target.value, i)}
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
         </li>
       )
-    });
+    })
+    
 
-    const ingredientBoxes = ingredientsActive.map((thingy, i) => {
+    const ingredientBoxes = ingredients.map((thingy, i) => {
       let iLabel = "Ingredient " + (i + 1);
       let dLabel = "Details for Ingredient " + (i + 1);
 
@@ -122,8 +115,8 @@ const AddPage = () => {
                   <Autocomplete
                   // sx={{width:"15%"}}
                   freeSolo
-                  options={ingredients}
-                  onChange={event => handleIngredientChange(event, i)}
+                  options={DBingredients}
+                  onInputChange={(event, value) => handleIngredientChange(value, i)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -138,7 +131,7 @@ const AddPage = () => {
                 <Grid item sx={{width:"15%"}}>
                     &ensp;
                     <TextField 
-                    label={dLabel} onChange={event => handleDetailChange(event, i)}
+                    label={dLabel} onChange={(event) => handleDetailChange(event.target.value, i)}
                     style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
                 </Grid>
               </Grid>
@@ -178,7 +171,7 @@ const AddPage = () => {
       // array of all listed utensils in order.
       // if there are no utensils then it will be an array of 0 length.
       let uArray = Array(0);
-      for (let i = 0; i < maxUtensils; i++) {
+      for (let i = 0; i < utensils.length; i++) {
         if (typeof(utensils[i]) === "string" && utensils[i].length > 0) {
           uArray = [...uArray, utensils[i]];
         }
@@ -189,8 +182,7 @@ const AddPage = () => {
       // if an ingredient has no details, it will still be saved.
       // if there are details with no ingredient, it will not be saved.
       let iArray = Array(0);
-      const emptyString = "";
-      for (let i = 0; i < maxIngredients; i++) {
+      for (let i = 0; i < ingredients.length; i++) {
         if (typeof(ingredients[i]) === "string" && ingredients[i].length > 0) {
           if (typeof(details[i]) === "string" && details[i].length > 0) {
             iArray = [...iArray, {name: ingredients[i], notes: details[i]}];
@@ -199,6 +191,7 @@ const AddPage = () => {
           }
         }
       }
+
       const recipeObj = {
         name: title,
         energy: energy,
@@ -230,13 +223,12 @@ const AddPage = () => {
     }
 
     function addUtensil() {
-      utensilsActive[nextUtensil] = 1;
-      setNextUtensil(nextUtensil + 1);
+      setUtensils([...utensils, ""]);
     }
 
     function addIngredient() {
-      ingredientsActive[nextIngredient] = 1;
-      setNextIngredient(nextIngredient + 1);
+      setIngredients([...ingredients, ""]);
+      setDetails([...details, ""]);
     }
 
     function handleTitleChange(event) {
@@ -268,21 +260,21 @@ const AddPage = () => {
       setDirections(event.target.value);
     }
 
-    function handleUtensilChange(event, uNum) {
+    function handleUtensilChange(value, uNum) {
       const newUtensils = utensils.slice();
-      newUtensils[uNum] = event.target.value;
+      newUtensils[uNum] = value;
       setUtensils(newUtensils);
     }
 
-    function handleIngredientChange(event, iNum) {
+    function handleIngredientChange(value, iNum) {
       const newIngredients = ingredients.slice();
-      newIngredients[iNum] = event.target.value;
+      newIngredients[iNum] = value;
       setIngredients(newIngredients);
     }
 
-    function handleDetailChange(event, dNum) {
+    function handleDetailChange(value, dNum) {
       const newDetails = details.slice();
-      newDetails[dNum] = event.target.value;
+      newDetails[dNum] = value;
       setDetails(newDetails);
     }
 
@@ -390,7 +382,6 @@ const AddPage = () => {
         <div>
           <Button onClick={handleSave} variant="outlined">Save</Button>
         </div>
-        
         {/* </div> */}
       </div>
     )

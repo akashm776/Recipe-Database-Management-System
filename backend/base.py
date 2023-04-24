@@ -111,13 +111,7 @@ def fetchRecipe():
 
 @app.route("/newrecipe", methods=["POST"])
 def new_recipe():
-    data = dict(request.form)
-
-    # convert some fields to ints (formdata doesn't support sending ints)
-    intfields = ['date_added', 'views', 'time_mins']
-    for field in intfields:
-        if field in data.keys():
-            data[field] = int(data[field])
+    data = json.loads(request.form['data'])
 
     print(data)
     # TODO verify dictionary keys before blindly inserting them
