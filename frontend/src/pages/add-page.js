@@ -360,7 +360,18 @@ const AddPage = () => {
           <ol>
             {utensilBoxes}
           </ol>
-          <Button onClick={addUtensil} variant="outlined">Add Utensil</Button>
+          <Button 
+            onClick={addUtensil} 
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#93E9BE",
+              color: "#0047AB",
+              padding: "10px 20px",
+              fontSize: "14px"
+            }} 
+            variant="outlined">
+            Add Utensil
+          </Button>
         </div>
 
         <div>
@@ -369,7 +380,18 @@ const AddPage = () => {
           <ol>
             {ingredientBoxes}
           </ol>
-          <Button onClick={addIngredient} variant="outlined">Add Ingredient</Button>
+          <Button 
+            onClick={addIngredient}
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#93E9BE",
+              color: "#0047AB",
+              padding: "10px 20px",
+              fontSize: "14px"
+            }} 
+            variant="outlined">
+            Add Ingredient
+            </Button>
           <hr />
         </div>
 
@@ -380,7 +402,18 @@ const AddPage = () => {
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel multiline />
         </div>
         <div>
-          <Button onClick={handleSave} variant="outlined">Save</Button>
+          <Button 
+          onClick={handleSave}
+          style={{
+            borderRadius: 30,
+            backgroundColor: "#B6D0E2",
+            color: "#000000",
+            padding: "17px 34px",
+            fontSize: "18px"
+          }} 
+          variant="outlined">
+          Save
+          </Button>
         </div>
         {/* </div> */}
       </div>

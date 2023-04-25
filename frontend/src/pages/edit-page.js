@@ -3,7 +3,7 @@ import {useState} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField, Select, MenuItem, Paper, Stack, Grid, Snackbar } from '@mui/material';
 import MuiAlert from "@mui/material/Alert";
-import {Add, DinnerDining, Search, DensityMedium, Delete} from "@mui/icons-material";
+import {Add, DinnerDining, Search, DensityMedium, Delete, Save} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
 
@@ -303,22 +303,35 @@ const EditPage = () => {
       setDetails(newDetails);
     }
 
-    const [open, setOpen] = React.useState(false);
-
     const Alert = React.forwardRef(function Alert(props, ref) {
       return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
     });
   
-    const handleClick = () => {
-      setOpen(true);
+    const [successOpen, setSuccessOpen] = React.useState(false);
+    const [alertOpen, setAlertOpen] = React.useState(false);
+  
+    const handleSuccessClick = () => {
+      setSuccessOpen(true);
     };
   
-    const handleClose = (event, reason) => {
+    const handleSuccessClose = (event, reason) => {
       if (reason === "clickaway") {
         return;
       }
   
-      setOpen(false);
+      setSuccessOpen(false);
+    };
+  
+    const handleAlertClick = () => {
+      setAlertOpen(true);
+    };
+  
+    const handleAlertClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+  
+      setAlertOpen(false);
     };
 
     return  redirect ?
@@ -406,7 +419,18 @@ const EditPage = () => {
           <ol>
             {utensilBoxes}
           </ol>
-          <Button onClick={addUtensil} variant="outlined">Add Utensil</Button>
+          <Button 
+            onClick={addUtensil} 
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#93E9BE",
+              color: "#0047AB",
+              padding: "10px 20px",
+              fontSize: "14px"
+            }} 
+            variant="outlined">
+            Add Utensil
+          </Button>
         </div>
 
         <div>
@@ -415,7 +439,18 @@ const EditPage = () => {
           <ol>
             {ingredientBoxes}
           </ol>
-          <Button onClick={addIngredient} variant="outlined">Add Ingredient</Button>
+          <Button 
+            onClick={addIngredient}
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#93E9BE",
+              color: "#0047AB",
+              padding: "10px 20px",
+              fontSize: "14px"
+            }} 
+            variant="outlined">
+            Add Ingredient
+            </Button>
           <hr />
         </div>
 
@@ -426,21 +461,33 @@ const EditPage = () => {
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel multiline />
         </div>
         <div>
-          <Button onClick={handleSave} variant="outlined">Save</Button>
+          {/* <Button onClick={handleSave} variant="outlined">Save</Button> */}
+          <Button
+            variant="contained"
+            startIcon={<Save />}
+            onClick={handleSuccessClick}
+          >
+            Save Recipe
+          </Button>
+          <Snackbar open={successOpen} autoHideDuration={3000} onClose={handleSuccessClose}>
+            <Alert onClose={handleSuccessClose} severity="success" sx={{ width: "100%" }}>
+              Saved "{title}"
+            </Alert>
+          </Snackbar>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <Button
-        variant="contained"
-        color="error"
-        startIcon={<Delete />}
-        onClick={handleClick}
-      >
-        Delete Recipe
-      </Button>
-      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Deleted "{title}"
-        </Alert>
-      </Snackbar>
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            onClick={handleAlertClick}
+          >
+            Delete Recipe
+          </Button>
+          <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose}>
+            <Alert onClose={handleAlertClose} severity="error" sx={{ width: "100%" }}>
+              Deleted "{title}"
+            </Alert>
+          </Snackbar>
         </div>
       </div>
     )

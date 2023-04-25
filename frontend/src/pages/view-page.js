@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Helmet } from 'react';
 import {useState} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -123,7 +123,7 @@ const ViewPage = () => {
           <Grid container style={{direction:'column', alignItems:'flex-start', justify:'center', textAlign:'left', display:'inline-block'}}>
           
             <Grid item>
-            <ul style={{listStylePosition:'inside', margin:"auto", textAlign:"justify", verticalAlign:"middle", position: 'relative', display:'table'}}>
+            <ul style={{listStylePosition:'outside', margin:"auto", textAlign:"justify", verticalAlign:"middle", position: 'relative', display:'table'}}>
               {recIngredients.map((ingredient) => (
                 <Grid item> <li>{ingredient.name} &rarr; {ingredient.notes}</li> </Grid>
               ))}
@@ -140,7 +140,7 @@ const ViewPage = () => {
                   <li>{instruction}</li>
                 ))}
             </ul>
-
+            <hr />     
         </div>
       </div>
     )
