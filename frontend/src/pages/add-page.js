@@ -371,7 +371,7 @@ const AddPage = () => {
             onClick={addUtensil} 
             style={{
               borderRadius: 20,
-              backgroundColor: "#93E9BE",
+              backgroundColor: "#1de9b6",
               color: "#0047AB",
               padding: "10px 20px",
               fontSize: "14px"
@@ -391,7 +391,7 @@ const AddPage = () => {
             onClick={addIngredient}
             style={{
               borderRadius: 20,
-              backgroundColor: "#93E9BE",
+              backgroundColor: "#1de9b6",
               color: "#0047AB",
               padding: "10px 20px",
               fontSize: "14px"
