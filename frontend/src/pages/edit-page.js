@@ -142,6 +142,20 @@ const EditPage = () => {
       })
     }
 
+    function deleteRecipe(recipeId)
+    {
+      axios({
+        method: 'POST',
+        url: 'deleterecipe',
+        data: {
+          rid: recipeId
+        }
+      }).then((response)=>{
+        // If response.data is 1, success! If 0, failure :pensive:
+        console.log(response.data);
+      });
+    }
+
     function loadUtensils(utensilsToLoad) {
       for (let i = 0; i < utensilsToLoad.length - 1; i++) {
         utensils[i] = utensilsToLoad[i];
@@ -301,7 +315,7 @@ const EditPage = () => {
       const newDetails = details.slice();
       newDetails[dNum] = event.target.value;
       setDetails(newDetails);
-    }
+    } 
 
     const Alert = React.forwardRef(function Alert(props, ref) {
       return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -328,6 +342,7 @@ const EditPage = () => {
     };
   
     const handleAlertClose = (event, reason) => {
+      deleteRecipe(linkRecipeId)
       if (reason === "clickaway") {
         return;
       }
