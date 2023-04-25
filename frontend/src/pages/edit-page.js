@@ -1,11 +1,26 @@
 import React, { useEffect } from 'react';
 import {useState} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField, Select, MenuItem, Paper, Stack, Grid, Snackbar } from '@mui/material';
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, TextField, Select, MenuItem, Paper, Stack, Grid, Snackbar, Autocomplete, Typography, FormControl, InputLabel } from '@mui/material';
 import MuiAlert from "@mui/material/Alert";
 import {Add, DinnerDining, Search, DensityMedium, Delete, Save} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
+import { Box } from '@mui/system';
 import axios from 'axios';
+
+const energyLevels = [
+  {value:'easy',       display:'Easy'},
+  {value:'moderate',   display:'Moderate'},
+  {value:'difficult',  display:'Difficult'},
+];
+
+const mealTypes = [
+  {value:'breakfast',  display:'Breakfast'},
+  {value:'lunch',      display:'Lunch'},
+  {value:'dinner',     display:'Dinner'},
+  {value:'side dish',  display:'Side Dish'}, 
+  {value:'sweets',     display:'Sweets'},
+];
 
 const maxUtensils = 100;
 const maxIngredients = 100;
@@ -27,8 +42,32 @@ function addRecipe(image, recipe) {
     }
   }).then((response)=>{
     // If response.data is 1, success! If 0, failure :pensive:
-    console.log(response.data);
+    const success = response.data;
+    if (success === 1) {
+      console.log("save successful!");
+    } else {
+      console.log("save unsuccessful");
+    }
   });
+}
+
+/**
+ * loads all ingredients and passes them to the setIngredients function
+ * @param {function} setIngredients 
+ */
+function loadIngredients(setIngredients) {
+  axios({
+    method: 'GET',
+    url: 'ingredientlist',
+  }).then((response) => {
+    let res = response.data;
+    // console.log(res)
+    setIngredients(res);
+  })
+  .catch((error)=>{
+    console.log("Query for all ingredients gave: "+error.message+ "\ntrying again in 3 seconds");
+    setTimeout(()=>loadIngredients(setIngredients), 3000);
+  })
 }
 
 const EditPage = () => {
@@ -41,20 +80,20 @@ const EditPage = () => {
     const [linkRecipeId, setLinkRecipeId] = useState("");
     const [currentImage, setCurrentImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const [timeError, setTimeError] = useState(false);
     const [title, setTitle] = useState("");
-    const [energy, setEnergy] = useState("Easy");
+    const [energy, setEnergy] = useState(energyLevels[0].value);
     const [time, setTime] = useState("");
-    const [mealType, setMealType] = useState("");
+    const [mealType, setMealType] = useState(mealTypes[0].value);
     const [directions, setDirections] = useState("");
-    const [utensils, setUtensils] = useState(Array(1).fill(""));
-    const [utensilsActive, setUtensilsActive] = useState(Array(1).fill(1));
-    const [nextUtensil, setNextUtensil] = useState(1);
-    const [ingredients, setIngredients] = useState([Array(maxIngredients).fill(null)]);
-    const [details, setDetails] = useState([Array(maxIngredients).fill(null)]);
-    const [ingredientsActive, setIngredientsActive] = useState([Array(maxIngredients).map((a, i) => boxLogicInit(i))]);
-    const [nextIngredient, setNextIngredient] = useState(1);
+    const [utensils, setUtensils] = useState([""]);
+    const [ingredients, setIngredients] = useState([""]);
+    const [DBingredients, setDBIngredients] = useState([""]);
+    const [details, setDetails] = useState([""]);
     const [fileValue, setFileValue] = useState(''); // this is used so we have ability to clear the image
     const [oldImagePath, setOldImagePath] = useState("");
+
+    useEffect(()=>loadIngredients(setDBIngredients), []) // this function will only be called on initial page load
 
     let currentRecipe;
     
@@ -62,7 +101,7 @@ const EditPage = () => {
       // { name: "Home", icon: <HomeOutlined />, action:() => navigate("/") },
       { name: "Search Recipes", icon: <Search />, action:() => navigate("/") },
       { name: "New Recipe", icon: <Add />, action:() => navigate("/add-recipe") },
-      { name: "View Recipe", icon: <DinnerDining />, action:() => handleViewLink(state.rid) },
+      { name: "View Recipe", icon: <DinnerDining />, action:() => handleViewLink() },
     ];
     
     const getDrawerList = () => (
@@ -86,37 +125,50 @@ const EditPage = () => {
       }, []);
     }
 
-    const utensilBoxes = utensilsActive.map((thingy, i) => {
+    const utensilBoxes = utensils.map((thingy, i) => {
       let uLabel = "Utensil " + (i + 1);
 
       return (
-        <li key={i}>
-          <br />
-          <TextField label={uLabel} value={utensils[i]} onChange={event => handleUtensilChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-        </li>
+        <TextField key={i} label={uLabel} value={utensils[i]}
+          onChange={(event) => handleUtensilChange(event.target.value, i)}
+          variant="outlined" hiddenLabel />
       )
     });
 
-    const ingredientBoxes = ingredientsActive.map((thingy, i) => {
+    const ingredientBoxes = ingredients.map((thingy, i) => {
       let iLabel = "Ingredient " + (i + 1);
       let dLabel = "Details for Ingredient " + (i + 1);
 
       return (
-        <li key={i}>
-          <br />
-          <TextField 
-            label={iLabel} onChange={event => handleIngredientChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-          &ensp;
-          <TextField 
-            label={dLabel} onChange={event => handleDetailChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-        </li>
+        <Grid key={i} container columnSpacing={2} alignItems="center" justifyContent="center">
+          <Grid item xs={4} md={3}>
+            <Autocomplete
+              freeSolo
+              fullWidth
+              options={DBingredients}
+              value={ingredients[i]}
+              onInputChange={(event, value) => handleIngredientChange(value, i)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={iLabel}
+                  variant="outlined" hiddenLabel
+                  placeholder="Type an ingredient"
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={7} md={5}>
+            <TextField 
+              fullWidth value={details[i]}
+              label={dLabel} onChange={(event) => handleDetailChange(event.target.value, i)}
+              variant="outlined" hiddenLabel />
+          </Grid>
+        </Grid>
       )
     });
     
-    function handleViewLink(rid) {
+    function handleViewLink() {
       setRedirect(true);
     }
 
@@ -133,7 +185,8 @@ const EditPage = () => {
         setTitle(currentRecipe.name);
         setEnergy(currentRecipe.energy);
         setMealType(currentRecipe.meal_type);
-        loadUtensils(currentRecipe.utensils);
+        getOldUtensils(currentRecipe.utensils);
+        getOldIngredients(currentRecipe.ingredients);
         setTime(currentRecipe.time_mins);
         setDirections(currentRecipe.instructions);
         setImagePreview(currentRecipe.image_path);
@@ -142,14 +195,22 @@ const EditPage = () => {
       })
     }
 
-    function loadUtensils(utensilsToLoad) {
-      for (let i = 0; i < utensilsToLoad.length - 1; i++) {
+    function getOldUtensils(utensilsToLoad) {
+      for (let i = 0; i < utensilsToLoad.length; i++) {
         utensils[i] = utensilsToLoad[i];
-        if (i !== utensilsToLoad.length - 2) {
-          utensilsActive[i + 1] = 1;
+      }
+    }
+
+    function getOldIngredients(ingredientsToLoad) {
+      for (let i = 0; i < ingredientsToLoad.length; i++) {
+        ingredients[i] = ingredientsToLoad[i]["name"];
+        if (ingredientsToLoad[i]["notes"]) {
+          details[i] = ingredientsToLoad[i]["notes"];
         }
       }
-      setNextUtensil(utensilsToLoad.length - 1);
+
+      console.log(ingredients);
+      console.log(details);
       
     }
 
@@ -157,19 +218,9 @@ const EditPage = () => {
       setRedirect(true)
     }
 
-    function boxLogicInit(i) {
-      if (i === 0) {
-        return 1;
-      } else {
-        return null;
-      }
-    }
-
     function selectFile(event) {
       setCurrentImage(event.target.files[0]);
       setImagePreview(URL.createObjectURL(event.target.files[0]));
-      console.log("Selected image:");
-      console.log(currentImage);
     }
 
     function handleSave() {
@@ -244,16 +295,16 @@ const EditPage = () => {
       console.log(JSON.stringify(recipeObj));
       // addRecipe(JSON.stringify(recipeObj));
       addRecipe(currentImage, recipeObj);
+      //console.log(response);
     }
 
     function addUtensil() {
-      utensilsActive[nextUtensil] = 1;
-      setNextUtensil(nextUtensil + 1);
+      setUtensils([...utensils, ""]);
     }
 
     function addIngredient() {
-      ingredientsActive[nextIngredient] = 1;
-      setNextIngredient(nextIngredient + 1);
+      setIngredients([...ingredients, ""]);
+      setDetails([...details, ""]);
     }
 
     function handleTitleChange(event) {
@@ -264,7 +315,6 @@ const EditPage = () => {
       setEnergy(event.target.value);
     }
 
-    const [timeError, setTimeError] = useState(false);
 
     function handleTimeChange(event) {
       let num = Number(event.target.value);
@@ -285,21 +335,21 @@ const EditPage = () => {
       setDirections(event.target.value);
     }
 
-    function handleUtensilChange(event, uNum) {
+    function handleUtensilChange(value, uNum) {
       const newUtensils = utensils.slice();
-      newUtensils[uNum] = event.target.value;
+      newUtensils[uNum] = value;
       setUtensils(newUtensils);
     }
 
-    function handleIngredientChange(event, iNum) {
+    function handleIngredientChange(value, iNum) {
       const newIngredients = ingredients.slice();
-      newIngredients[iNum] = event.target.value;
+      newIngredients[iNum] = value;
       setIngredients(newIngredients);
     }
 
-    function handleDetailChange(event, dNum) {
+    function handleDetailChange(value, dNum) {
       const newDetails = details.slice();
-      newDetails[dNum] = event.target.value;
+      newDetails[dNum] = value;
       setDetails(newDetails);
     }
 
@@ -349,77 +399,94 @@ const EditPage = () => {
           </Drawer>
         </div>
 
-        <Paper className="imageUpload" height={2} sx={{padding:'12px', display:'table-cell', width:'300px', height:'100px'}}>
-          <Grid container spacing={1} justifyContent='center'>
-            <Grid item >
-            <label htmlFor="btn-upload">
-              <input
-                id="btn-upload"
-                name="btn-upload"
-                style={{ display: 'none' }}
-                type="file"
-                accept="image/*"null
-                value={fileValue}
-                onChange={selectFile} />
-              <Button
-                className="btn-choose"
-                variant="outlined"
-                component="span" >
-                  Choose Image
-              </Button>
-            </label>
-            </Grid>
-
-            <Grid item >
-              <Button
-                className="btn-cancel"
-                color="primary"
-                variant="contained"
-                style={{flex:'none'}}
-                disabled={!currentImage}
-                onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
-                <ClearIcon />
-              </Button>
-            </Grid>
-            <Grid item >
-              <img src={imagePreview} alt="" style={{width:'100%', maxHeight:'300px'}} />
-            </Grid>
-            <Grid item className="file-name">
-              {currentImage ? currentImage.name : null}
-            </Grid>
+        <Grid container justifyContent='space-around' rowSpacing={3} margin='12px'>
+          <Grid item>
+          <Stack direction='column' spacing={3}>
+            <Typography variant='h3'>Edit Recipe</Typography>
+            <TextField 
+              label="Title" onChange={handleTitleChange} value={title}
+              style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
+            <Stack direction='row' spacing={3}>
+              <FormControl>
+                <InputLabel>Energy</InputLabel>
+                <Select 
+                  className='energySelect' label="Energy"
+                  value={energy} 
+                  onChange={handleEnergyChange} >
+                    {energyLevels.map((item, i)=>{
+                      return <MenuItem key={i} value={item.value}>{item.display}</MenuItem>
+                    })}
+                </Select>
+              </FormControl>
+              <TextField 
+                label="Time in Minutes" value={time} error={timeError} onChange={handleTimeChange}
+                variant="outlined" style={{width:"16ch"}} hiddenLabel />
+              <FormControl>
+                <InputLabel>Meal Type</InputLabel>
+                <Select 
+                  className='mealSelect' label="Meal Type"
+                  value={mealType} 
+                  onChange={handleMealTypeChange} >
+                    {mealTypes.map((item, i)=>{
+                      return <MenuItem key={i} value={item.value}>{item.display}</MenuItem>
+                    })}
+                </Select>
+              </FormControl>
+            </Stack>
+          </Stack>
           </Grid>
-        </Paper>
+          <Grid item>
+          <Paper className="imageUpload" height={2}
+              sx={{padding:'12px', display:'table-cell', width:'300px', height:'300px'}}>
+            <Grid container spacing={1} justifyContent='center'>
+              <Grid item >
+              <label htmlFor="btn-upload">
+                <input
+                  id="btn-upload"
+                  name="btn-upload"
+                  style={{ display: 'none' }}
+                  type="file"
+                  accept="image/*"
+                  value={fileValue}
+                  onChange={selectFile} />
+                <Button
+                  className="btn-choose"
+                  variant="outlined"
+                  component="span" >
+                    Choose Image
+                </Button>
+              </label>
+              </Grid>
 
-        <div>
-          <TextField 
-            label="Title" onChange={handleTitleChange} value={title}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
-          <br /><br />
-          Energy:&ensp;
-          <Select 
-            className='sortSelect' label="Sort by"
-            value={energy} 
-            onChange={handleEnergyChange} >
-              <MenuItem value="Easy">Easy</MenuItem>
-              <MenuItem value="Moderate">Moderate</MenuItem>
-              <MenuItem value="Difficult">Difficult</MenuItem>
-          </Select>
-          &emsp;
-          <TextField 
-            label="Time in Minutes" value={time} error={timeError} onChange={handleTimeChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-          <br /><br />
-          <TextField 
-            label="Meal Type" value={mealType} onChange={handleMealTypeChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-        </div>
+              <Grid item >
+                <Button
+                  className="btn-cancel"
+                  color="primary"
+                  variant="contained"
+                  style={{flex:'none'}}
+                  disabled={!currentImage}
+                  onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
+                  <ClearIcon />
+                </Button>
+              </Grid>
+              <Grid item >
+                <Box >
+                  <img src={imagePreview} alt="" style={{maxWidth:'100%', maxHeight:'100%'}} />
+                </Box>
+              </Grid>
+              <Grid item className="file-name">
+                <Typography>{currentImage ? currentImage.name : null}</Typography>
+              </Grid>
+            </Grid>
+          </Paper>
+          </Grid>
+        </Grid>
 
         <div>
           <hr /><br />
-          Utensils
-          <ol>
+          <Stack spacing={1} direction='column' alignItems='center'>
+            <Typography>Utensils</Typography>
             {utensilBoxes}
-          </ol>
           <Button 
             onClick={addUtensil} 
             style={{
@@ -432,14 +499,14 @@ const EditPage = () => {
             variant="outlined">
             Add Utensil
           </Button>
+          </Stack>
         </div>
 
         <div>
           <hr /><br />
-          Ingredients
-          <ol>
+          <Stack spacing={1} direction='column' justifyContent='center' alignItems='center'>
+            <Typography>Ingredients</Typography>
             {ingredientBoxes}
-          </ol>
           <Button 
             onClick={addIngredient}
             style={{
@@ -452,22 +519,28 @@ const EditPage = () => {
             variant="outlined">
             Add Ingredient
             </Button>
+          </Stack>
           <hr />
         </div>
 
-        <div className="searchRow" style={{display:'flex', margin:'12px'}} >
+        <div >
           <br />
-          <TextField 
-            label="Directions" value={directions} onChange={handleDirectionsChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel multiline />
+          <Grid container justifyContent='center'>
+            <Grid item xs={11} sm={10} md={8}>
+              <TextField 
+                label="Directions" value={directions} onChange={handleDirectionsChange}
+                minRows={4} variant="outlined" hiddenLabel fullWidth multiline />
+            </Grid>
+          </Grid>
         </div>
+
         <div>
+          <br />
           {/* <Button onClick={handleSave} variant="outlined">Save</Button> */}
           <Button
-            variant="contained"
-            startIcon={<Save />}
-            onClick={handleSuccessClick}
-          >
+              variant="contained"
+              startIcon={<Save />}
+              onClick={handleSuccessClick} >
             Save Recipe
           </Button>
           <Snackbar open={successOpen} autoHideDuration={3000} onClose={handleSuccessClose}>
@@ -477,11 +550,10 @@ const EditPage = () => {
           </Snackbar>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <Button
-            variant="contained"
-            color="error"
-            startIcon={<Delete />}
-            onClick={handleAlertClick}
-          >
+              variant="contained"
+              color="error"
+              startIcon={<Delete />}
+              onClick={handleAlertClick} >
             Delete Recipe
           </Button>
           <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose}>
