@@ -149,7 +149,8 @@ def new_recipe():
 @app.route("/editrecipe", methods=["POST"])
 def edit_recipe():
     data = json.loads(request.form['data'])
-
+    
+    data["_id"] = ObjectId(data["_id"]["linkRecipeId"])
     print(data)
     # TODO verify dictionary keys before blindly inserting them
 
@@ -170,14 +171,16 @@ def edit_recipe():
             filename = ''.join(random.choices(list(alphanumeric), k=16)) + "." + file_extension
             path = IMAGE_DIR+filename
         
-        image.save(path)
+        #image.save(path)
         print(f"file saved to {path}")
 
         data["image_path"] = "/images/"+filename # remember we need the relative path from inside the public directory
-
-    insert_result = recipes.update_one(data["_id"], data)
-
-    #response_body = {
-    #    "results": str(insert_result.inserted_id)
-    #}
-    return str(insert_result.inserted_id)
+    else:
+        print("No image provided")
+    
+    insert_result = "Test"
+    insert_result = recipes.replace_one({'_id': data["_id"]}, data)
+    print("Number of matches: " + str(insert_result.matched_count) +
+               "\nNumber of documents modified: " + str(insert_result.modified_count))
+    
+    return str(insert_result.modified_count)

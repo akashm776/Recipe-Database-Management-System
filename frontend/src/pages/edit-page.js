@@ -26,6 +26,7 @@ function addRecipe(image, recipe) {
       "Content-Type": "multipart/form-data",
     }
   }).then((response)=>{
+    // If response.data is 1, success! If 0, failure :pensive:
     console.log(response.data);
   });
 }
