@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Helmet } from 'react';
 import {useState} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -140,7 +140,7 @@ const ViewPage = () => {
                   <li>{instruction}</li>
                 ))}
             </ul>
-
+            <hr />     
         </div>
       </div>
     )

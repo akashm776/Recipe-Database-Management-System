@@ -118,7 +118,7 @@ const AddPage = () => {
           {/* <Box sx={{justifyContent: 'auto'}}> */}
             {/* <Stack justifyContent= 'center' spaceing= '2'> */}
               <Grid container direction="column" alignItems="center" justify="center">
-                <Grid item sx={{width:"15%"}}>
+                <Grid item sx={{width:"13.5%"}}>
                   <Autocomplete
                   // sx={{width:"15%"}}
                   freeSolo
@@ -234,6 +234,11 @@ const AddPage = () => {
       setNextUtensil(nextUtensil + 1);
     }
 
+    function removeUtensil() {
+      utensilsActive[nextUtensil] = 0;
+      setNextUtensil(nextUtensil);
+    }
+
     function addIngredient() {
       ingredientsActive[nextIngredient] = 1;
       setNextIngredient(nextIngredient + 1);
@@ -273,6 +278,7 @@ const AddPage = () => {
       newUtensils[uNum] = event.target.value;
       setUtensils(newUtensils);
     }
+
 
     function handleIngredientChange(event, iNum) {
       const newIngredients = ingredients.slice();
@@ -366,16 +372,34 @@ const AddPage = () => {
           <ol>
             {utensilBoxes}
           </ol>
-          <Button onClick={addUtensil} variant="outlined">Add Utensil</Button>
+          <Button 
+            onClick={addUtensil} 
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#93E9BE",
+              color: "#0047AB",
+              padding: "10px 20px",
+              fontSize: "14px"
+          }} variant="outlined">
+            Add Utensil
+          </Button>
         </div>
-
         <div>
           <hr /><br />
           Ingredients
           <ol>
             {ingredientBoxes}
           </ol>
-          <Button onClick={addIngredient} variant="outlined">Add Ingredient</Button>
+          <Button onClick={addIngredient}
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#93E9BE",
+              color: "#0047AB",
+              padding: "10px 20px",
+              fontSize: "14px"
+            }} 
+            variant="outlined">
+            Add Ingredient</Button>
           <hr />
         </div>
 
@@ -386,7 +410,18 @@ const AddPage = () => {
             style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel multiline />
         </div>
         <div>
-          <Button onClick={handleSave} variant="outlined">Save</Button>
+          <Button 
+            onClick={handleSave} 
+            style={{
+              borderRadius: 30,
+              backgroundColor: "#B6D0E2",
+              color: "#000000",
+              padding: "17px 34px",
+              fontSize: "18px"
+            }} 
+            variant="outlined">
+            Save
+          </Button>
         </div>
         
         {/* </div> */}
