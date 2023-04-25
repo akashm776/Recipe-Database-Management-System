@@ -301,7 +301,7 @@ const AddPage = () => {
               </FormControl>
               <TextField 
                 label="Time in Minutes" error={timeError} onChange={handleTimeChange}
-                variant="outlined" style={{width:"15ch"}} hiddenLabel />
+                variant="outlined" style={{width:"16ch"}} hiddenLabel />
               <FormControl>
                 <InputLabel>Meal Type</InputLabel>
                 <Select 
