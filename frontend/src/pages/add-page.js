@@ -102,11 +102,8 @@ const AddPage = () => {
       let uLabel = "Utensil " + (i + 1);
 
       return (
-        <li key={i}>
-          <br />
-          <TextField label={uLabel} onChange={(event) => handleUtensilChange(event.target.value, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-        </li>
+        <TextField key={i} label={uLabel} onChange={(event) => handleUtensilChange(event.target.value, i)}
+          variant="outlined" hiddenLabel />
       )
     })
     
@@ -116,34 +113,30 @@ const AddPage = () => {
       let dLabel = "Details for Ingredient " + (i + 1);
 
       return (
-        <li key={i}>
-          <br />
-          <Grid container direction="column" alignItems="center" justify="center">
-            <Grid item sx={{width:"15%"}}>
-              <Autocomplete
-              // sx={{width:"15%"}}
+        <Grid key={i} container columnSpacing={2} alignItems="center" justifyContent="center">
+          <Grid item xs={4} md={3}>
+            <Autocomplete
               freeSolo
+              fullWidth
               options={DBingredients}
               onInputChange={(event, value) => handleIngredientChange(value, i)}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label={iLabel}
-                  style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel
+                  variant="outlined" hiddenLabel
                   placeholder="Type an ingredient"
                 />
               )}
-              />
-              &ensp;
-            </Grid>
-            <Grid item sx={{width:"15%"}}>
-                &ensp;
-                <TextField 
-                label={dLabel} onChange={(event) => handleDetailChange(event.target.value, i)}
-                style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-            </Grid>
+            />
           </Grid>
-        </li>
+          <Grid item xs={7} md={5}>
+            <TextField 
+              fullWidth
+              label={dLabel} onChange={(event) => handleDetailChange(event.target.value, i)}
+              variant="outlined" hiddenLabel />
+          </Grid>
+        </Grid>
       )
     });
 
@@ -287,7 +280,7 @@ const AddPage = () => {
           </Drawer>
         </div>
 
-        <Grid container justifyContent='space-around' margin='12px'>
+        <Grid container justifyContent='space-around' rowSpacing={3} margin='12px'>
           <Grid item>
           <Stack direction='column' spacing={3}>
             <Typography variant='h3'>Add a New Recipe</Typography>
@@ -371,10 +364,9 @@ const AddPage = () => {
 
         <div>
           <hr /><br />
-          Utensils
-          <ol>
+          <Stack spacing={1} direction='column' alignItems='center'>
+            <Typography>Utensils</Typography>
             {utensilBoxes}
-          </ol>
           <Button 
             onClick={addUtensil} 
             style={{
@@ -387,14 +379,14 @@ const AddPage = () => {
             variant="outlined">
             Add Utensil
           </Button>
+          </Stack>
         </div>
 
         <div>
           <hr /><br />
-          Ingredients
-          <ol>
+          <Stack spacing={1} direction='column' justifyContent='center' alignItems='center'>
+            <Typography>Ingredients</Typography>
             {ingredientBoxes}
-          </ol>
           <Button 
             onClick={addIngredient}
             style={{
@@ -407,16 +399,23 @@ const AddPage = () => {
             variant="outlined">
             Add Ingredient
             </Button>
+          </Stack>
           <hr />
         </div>
 
-        <div className="searchRow" style={{display:'flex', margin:'12px'}} >
+        <div >
           <br />
-          <TextField 
-            label="Directions" onChange={handleDirectionsChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel multiline />
+          <Grid container justifyContent='center'>
+            <Grid item xs={11} sm={10} md={8}>
+              <TextField 
+                label="Directions" onChange={handleDirectionsChange}
+                minRows={4} variant="outlined" hiddenLabel fullWidth multiline />
+            </Grid>
+          </Grid>
         </div>
+
         <div>
+          <br />
           <Button 
           onClick={handleSave}
           style={{
@@ -430,7 +429,6 @@ const AddPage = () => {
           Save
           </Button>
         </div>
-        {/* </div> */}
       </div>
     )
 }
