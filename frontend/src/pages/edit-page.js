@@ -213,20 +213,6 @@ const EditPage = () => {
       });
     }
 
-    function deleteRecipe(recipeId)
-    {
-      axios({
-        method: 'POST',
-        url: 'deleterecipe',
-        data: {
-          rid: recipeId
-        }
-      }).then((response)=>{
-        // If response.data is 1, success! If 0, failure :pensive:
-        console.log(response.data);
-      });
-    }
-
     function getOldUtensils(utensilsToLoad) {
       for (let i = 0; i < utensilsToLoad.length; i++) {
         utensils[i] = utensilsToLoad[i];
@@ -403,6 +389,7 @@ const EditPage = () => {
       }
   
       setSuccessOpen(false);
+      handleViewLink();
     };
     
     const handleDialogOpen = () => {
@@ -429,6 +416,7 @@ const EditPage = () => {
       }
   
       setAlertOpen(false);
+      navigate("/");
     };
 
     return  redirect ?
@@ -605,7 +593,7 @@ const EditPage = () => {
               onClick={handleSuccessClick} >
             Save Recipe
           </Button>
-          <Snackbar open={successOpen} autoHideDuration={3000} onClose={handleSuccessClose}>
+          <Snackbar open={successOpen} autoHideDuration={1500} onClose={handleSuccessClose}>
             <Alert onClose={handleSuccessClose} severity="success" sx={{ width: "100%" }}>
               Saved "{title}"
             </Alert>
@@ -618,7 +606,7 @@ const EditPage = () => {
               onClick={handleDialogOpen} >
             Delete Recipe
           </Button>
-          <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose}>
+          <Snackbar open={alertOpen} autoHideDuration={1500} onClose={handleAlertClose}>
             <Alert onClose={handleAlertClose} severity="error" sx={{ width: "100%" }}>
               Deleted "{title}"
             </Alert>
