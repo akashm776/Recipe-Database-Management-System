@@ -404,7 +404,18 @@ const EditPage = () => {
           <ol>
             {utensilBoxes}
           </ol>
-          <Button onClick={addUtensil} variant="outlined">Add Utensil</Button>
+          <Button 
+            onClick={addUtensil} 
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#93E9BE",
+              color: "#0047AB",
+              padding: "10px 20px",
+              fontSize: "14px"
+            }} 
+            variant="outlined">
+            Add Utensil
+          </Button>
         </div>
 
         <div>
@@ -413,7 +424,18 @@ const EditPage = () => {
           <ol>
             {ingredientBoxes}
           </ol>
-          <Button onClick={addIngredient} variant="outlined">Add Ingredient</Button>
+          <Button 
+            onClick={addIngredient}
+            style={{
+              borderRadius: 20,
+              backgroundColor: "#93E9BE",
+              color: "#0047AB",
+              padding: "10px 20px",
+              fontSize: "14px"
+            }} 
+            variant="outlined">
+            Add Ingredient
+            </Button>
           <hr />
         </div>
 
