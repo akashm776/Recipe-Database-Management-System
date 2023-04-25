@@ -1,8 +1,9 @@
 import React from 'react';
 import {useState} from 'react';
 import {useEffect} from 'react';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem, Paper, Stack, Grid, Autocomplete, Typography, FormControl, FormLabel, InputLabel } from '@mui/material';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Snackbar, Select, MenuItem, Paper, Stack, Grid, Autocomplete, Typography, FormControl, FormLabel, InputLabel } from '@mui/material';
+import MuiAlert from "@mui/material/Alert";
 import {Add, Search, DensityMedium, HomeOutlined, Details} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
@@ -24,7 +25,7 @@ const mealTypes = [
 ];
 const imageDir = "../frontend/public/images/";
 
-function addRecipe(image, recipe) {
+function addRecipe(image, recipe, setRecId) {
   let formdata = new FormData();
   if (image !== null) {
     formdata.append("image", image);
@@ -40,6 +41,7 @@ function addRecipe(image, recipe) {
     }
   }).then((response)=>{
     console.log(response.data);
+    setRecId(response.data);
   });
 }
 
@@ -65,6 +67,8 @@ function loadIngredients(setIngredients) {
 
 const AddPage = () => {
     const navigate = useNavigate();
+    const [redirect, setRedirect] = useState(false);
+    const [linkRecipeId, setLinkRecipeId] = useState("");
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -79,6 +83,7 @@ const AddPage = () => {
     const [DBingredients, setDBIngredients] = useState([]);
     const [details, setDetails] = useState([]);
     const [fileValue, setFileValue] = useState(''); // this is used so we have ability to clear the image
+    const [successOpen, setSuccessOpen] = React.useState(false);
 
     useEffect(()=>loadIngredients(setDBIngredients), []) // this function will only be called on initial page load
 
@@ -142,6 +147,10 @@ const AddPage = () => {
         </Grid>
       )
     });
+    
+    function handleViewLink() {
+      setRedirect(true);
+    }
 
     function selectFile(event) {
       setCurrentImage(event.target.files[0]);
@@ -213,7 +222,7 @@ const AddPage = () => {
 
       console.log(JSON.stringify(recipeObj));
       // addRecipe(JSON.stringify(recipeObj));
-      addRecipe(currentImage, recipeObj);
+      addRecipe(currentImage, recipeObj, setLinkRecipeId);
     }
 
     function addUtensil() {
@@ -271,7 +280,27 @@ const AddPage = () => {
       setDetails(newDetails);
     }
 
-    return (
+    const Alert = React.forwardRef(function Alert(props, ref) {
+      return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+    
+    const handleSuccessClick = () => {
+      handleSave();
+      setSuccessOpen(true);
+    };
+
+    const handleSuccessClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+  
+      setSuccessOpen(false);
+      handleViewLink();
+    };
+
+    return redirect ?
+    <Navigate to="/view-recipe" replace={true} state={{rid: {linkRecipeId}}} />
+    :(
       <div className="App">
         <div className="searchRow" style={{display:'flex', margin:'12px'}}>
           <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}>
@@ -304,7 +333,7 @@ const AddPage = () => {
               </FormControl>
               <TextField 
                 label="Time in Minutes" error={timeError} onChange={handleTimeChange}
-                color = "secondary"
+                color = "secondary" value={time}
                 variant="outlined" style={{width:"16ch"}} hiddenLabel />
               <FormControl>
                 <InputLabel>Meal Type</InputLabel>
@@ -423,17 +452,22 @@ const AddPage = () => {
         <div>
           <br />
           <Button 
-          onClick={handleSave}
-          style={{
-            borderRadius: 30,
-            backgroundColor: "#B6D0E2",
-            color: "#000000",
-            padding: "17px 34px",
-            fontSize: "18px"
-          }} 
-          variant="outlined">
+            onClick={handleSuccessClick}
+            style={{
+              borderRadius: 30,
+              backgroundColor: "#B6D0E2",
+              color: "#000000",
+              padding: "17px 34px",
+              fontSize: "18px"
+            }} 
+            variant="outlined" >
           Save
           </Button>
+          <Snackbar open={successOpen} autoHideDuration={800} onClose={handleSuccessClose}>
+            <Alert onClose={handleSuccessClose} severity="success" sx={{ width: "100%" }}>
+              Saved "{title}"
+            </Alert>
+          </Snackbar>
         </div>
       </div>
     )

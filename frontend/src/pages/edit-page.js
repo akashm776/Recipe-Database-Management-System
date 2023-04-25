@@ -419,7 +419,7 @@ const EditPage = () => {
       navigate("/");
     };
 
-    return  redirect ?
+    return redirect ?
     <Navigate to="/view-recipe" replace={true} state={{rid: {linkRecipeId}}} />
     :(
       <div className="App">
@@ -593,7 +593,7 @@ const EditPage = () => {
               onClick={handleSuccessClick} >
             Save Recipe
           </Button>
-          <Snackbar open={successOpen} autoHideDuration={1500} onClose={handleSuccessClose}>
+          <Snackbar open={successOpen} autoHideDuration={800} onClose={handleSuccessClose}>
             <Alert onClose={handleSuccessClose} severity="success" sx={{ width: "100%" }}>
               Saved "{title}"
             </Alert>
@@ -606,7 +606,7 @@ const EditPage = () => {
               onClick={handleDialogOpen} >
             Delete Recipe
           </Button>
-          <Snackbar open={alertOpen} autoHideDuration={1500} onClose={handleAlertClose}>
+          <Snackbar open={alertOpen} autoHideDuration={800} onClose={handleAlertClose}>
             <Alert onClose={handleAlertClose} severity="error" sx={{ width: "100%" }}>
               Deleted "{title}"
             </Alert>
