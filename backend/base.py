@@ -58,12 +58,12 @@ def search(data):
         search_filters.append({"ingredients.name":{"$nin": data["ingredients"]["exclude"]}})
 
     if len(data["energy"]["include"]) > 0:
-        search_filters.append({"energy":{"$all": data["energy"]["include"]}})
+        search_filters.append({"energy":{"$in": data["energy"]["include"]}})
     if len(data["energy"]["exclude"]) > 0:
         search_filters.append({"energy":{"$nin": data["energy"]["exclude"]}})
 
     if len(data["meal_type"]["include"]) > 0:
-        search_filters.append({"meal_type":{"$all": data["meal_type"]["include"]}})
+        search_filters.append({"meal_type":{"$in": data["meal_type"]["include"]}})
     if len(data["meal_type"]["exclude"]) > 0:
         search_filters.append({"meal_type":{"$nin": data["meal_type"]["exclude"]}})
 
