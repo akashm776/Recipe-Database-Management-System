@@ -287,7 +287,8 @@ const AddPage = () => {
           </Drawer>
         </div>
 
-        <Stack direction='row' justifyContent='space-around' margin='12px'>
+        <Grid container justifyContent='space-around' margin='12px'>
+          <Grid item>
           <Stack direction='column' spacing={3}>
             <Typography variant='h3'>Add a New Recipe</Typography>
             <TextField 
@@ -321,7 +322,9 @@ const AddPage = () => {
               </FormControl>
             </Stack>
           </Stack>
-          <Paper className="imageUpload" height={2} sx={{padding:'12px', width:'300px', height:'300px'}}>
+          </Grid>
+          <Grid item>
+          <Paper className="imageUpload" height={2} sx={{padding:'12px', display:'table-cell', width:'300px', height:'300px'}}>
             <Grid container spacing={1} justifyContent='center'>
               <Grid item >
               <label htmlFor="btn-upload">
@@ -363,7 +366,8 @@ const AddPage = () => {
               </Grid>
             </Grid>
           </Paper>
-        </Stack>
+          </Grid>
+        </Grid>
 
         <div>
           <hr /><br />
