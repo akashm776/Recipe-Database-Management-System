@@ -2,13 +2,26 @@ import React from 'react';
 import {useState} from 'react';
 import {useEffect} from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem, Paper, Stack, Grid, Autocomplete } from '@mui/material';
+import { Button, Drawer, ListItem, ListItemIcon, ListItemText, IconButton, Select, MenuItem, Paper, Stack, Grid, Autocomplete, Typography, FormControl, FormLabel, InputLabel } from '@mui/material';
 import {Add, Search, DensityMedium, HomeOutlined, Details} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
 
+const energyLevels = [
+  {value:'easy',       display:'Easy'},
+  {value:'moderate',   display:'Moderate'},
+  {value:'difficult',  display:'Difficult'},
+];
+
+const mealTypes = [
+  {value:'breakfast',  display:'Breakfast'},
+  {value:'lunch',      display:'Lunch'},
+  {value:'dinner',     display:'Dinner'},
+  {value:'side dish',  display:'Side Dish'}, 
+  {value:'sweets',     display:'Sweets'},
+];
 const imageDir = "../frontend/public/images/";
 
 function addRecipe(image, recipe) {
@@ -56,9 +69,9 @@ const AddPage = () => {
     const [currentImage, setCurrentImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [title, setTitle] = useState(null);
-    const [energy, setEnergy] = useState("Easy");
+    const [energy, setEnergy] = useState(energyLevels[0].value);
     const [time, setTime] = useState(0);
-    const [mealType, setMealType] = useState(null);
+    const [mealType, setMealType] = useState(mealTypes[0].value);
     const [directions, setDirections] = useState(null);
     const [utensils, setUtensils] = useState([""]);
     const [ingredients, setIngredients] = useState([""]);
@@ -105,49 +118,34 @@ const AddPage = () => {
       return (
         <li key={i}>
           <br />
-          {/* <TextField 
-            label={iLabel} onChange={event => handleIngredientChange(event, i)}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel /> */}
-          {/* <Box sx={{justifyContent: 'auto'}}> */}
-            {/* <Stack justifyContent= 'center' spaceing= '2'> */}
-              <Grid container direction="column" alignItems="center" justify="center">
-                <Grid item sx={{width:"15%"}}>
-                  <Autocomplete
-                  // sx={{width:"15%"}}
-                  freeSolo
-                  options={DBingredients}
-                  onInputChange={(event, value) => handleIngredientChange(value, i)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={iLabel}
-                      style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel
-                      placeholder="Type an ingredient"
-                    />
-                  )}
-                  />
-                  &ensp;
-                </Grid>
-                <Grid item sx={{width:"15%"}}>
-                    &ensp;
-                    <TextField 
-                    label={dLabel} onChange={(event) => handleDetailChange(event.target.value, i)}
-                    style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-                </Grid>
-              </Grid>
-            {/* </Stack> */}
-      {/* </Box> */}
+          <Grid container direction="column" alignItems="center" justify="center">
+            <Grid item sx={{width:"15%"}}>
+              <Autocomplete
+              // sx={{width:"15%"}}
+              freeSolo
+              options={DBingredients}
+              onInputChange={(event, value) => handleIngredientChange(value, i)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={iLabel}
+                  style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel
+                  placeholder="Type an ingredient"
+                />
+              )}
+              />
+              &ensp;
+            </Grid>
+            <Grid item sx={{width:"15%"}}>
+                &ensp;
+                <TextField 
+                label={dLabel} onChange={(event) => handleDetailChange(event.target.value, i)}
+                style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
+            </Grid>
+          </Grid>
         </li>
       )
     });
-
-    function boxLogicInit(i) {
-      if (i === 0) {
-        return 1;
-      } else {
-        return null;
-      }
-    }
 
     function selectFile(event) {
       setCurrentImage(event.target.files[0]);
@@ -289,70 +287,83 @@ const AddPage = () => {
           </Drawer>
         </div>
 
-        <Paper className="imageUpload" height={2} sx={{padding:'12px', display:'table-cell', width:'300px', height:'100px'}}>
-          <Grid container spacing={1} justifyContent='center'>
-            <Grid item >
-            <label htmlFor="btn-upload">
-              <input
-                id="btn-upload"
-                name="btn-upload"
-                style={{ display: 'none' }}
-                type="file"
-                accept="image/*"
-                value={fileValue}
-                onChange={selectFile} />
-              <Button
-                className="btn-choose"
-                variant="outlined"
-                component="span" >
-                  Choose Image
-              </Button>
-            </label>
-            </Grid>
+        <Stack direction='row' justifyContent='space-around' margin='12px'>
+          <Stack direction='column' spacing={3}>
+            <Typography variant='h3'>Add a New Recipe</Typography>
+            <TextField 
+              label="Title" onChange={handleTitleChange}
+              style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
+            <Stack direction='row' spacing={3}>
+              <FormControl>
+                <InputLabel>Energy</InputLabel>
+                <Select 
+                  className='energySelect' label="Energy"
+                  value={energy} 
+                  onChange={handleEnergyChange} >
+                    {energyLevels.map((item, i)=>{
+                      return <MenuItem key={i} value={item.value}>{item.display}</MenuItem>
+                    })}
+                </Select>
+              </FormControl>
+              <TextField 
+                label="Time in Minutes" error={timeError} onChange={handleTimeChange}
+                variant="outlined" style={{width:"15ch"}} hiddenLabel />
+              <FormControl>
+                <InputLabel>Meal Type</InputLabel>
+                <Select 
+                  className='mealSelect' label="Meal Type"
+                  value={mealType} 
+                  onChange={handleMealTypeChange} >
+                    {mealTypes.map((item, i)=>{
+                      return <MenuItem key={i} value={item.value}>{item.display}</MenuItem>
+                    })}
+                </Select>
+              </FormControl>
+            </Stack>
+          </Stack>
+          <Paper className="imageUpload" height={2} sx={{padding:'12px', width:'300px', height:'300px'}}>
+            <Grid container spacing={1} justifyContent='center'>
+              <Grid item >
+              <label htmlFor="btn-upload">
+                <input
+                  id="btn-upload"
+                  name="btn-upload"
+                  style={{ display: 'none' }}
+                  type="file"
+                  accept="image/*"
+                  value={fileValue}
+                  onChange={selectFile} />
+                <Button
+                  className="btn-choose"
+                  variant="outlined"
+                  component="span" >
+                    Choose Image
+                </Button>
+              </label>
+              </Grid>
 
-            <Grid item >
-              <Button
-                className="btn-cancel"
-                color="primary"
-                variant="contained"
-                style={{flex:'none'}}
-                disabled={!currentImage}
-                onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
-                <ClearIcon />
-              </Button>
+              <Grid item >
+                <Button
+                  className="btn-cancel"
+                  color="primary"
+                  variant="contained"
+                  style={{flex:'none'}}
+                  disabled={!currentImage}
+                  onClick={()=>{setCurrentImage(null);setImagePreview(null);setFileValue('')}}>
+                  <ClearIcon />
+                </Button>
+              </Grid>
+              <Grid item >
+                <Box >
+                  <img src={imagePreview} alt="" style={{maxWidth:'100%', maxHeight:'100%'}} />
+                </Box>
+              </Grid>
+              <Grid item className="file-name">
+                <Typography>{currentImage ? currentImage.name : null}</Typography>
+              </Grid>
             </Grid>
-            <Grid item >
-              <img src={imagePreview} alt="" style={{width:'100%', maxHeight:'300px'}} />
-            </Grid>
-            <Grid item className="file-name">
-              {currentImage ? currentImage.name : null}
-            </Grid>
-          </Grid>
-        </Paper>
-
-        <div>
-          <TextField 
-            label="Title" onChange={handleTitleChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
-          <br /><br />
-          Energy:&ensp;
-          <Select 
-            className='sortSelect' label="Sort by"
-            value={energy} 
-            onChange={handleEnergyChange} >
-              <MenuItem value="Easy">Easy</MenuItem>
-              <MenuItem value="Moderate">Moderate</MenuItem>
-              <MenuItem value="Difficult">Difficult</MenuItem>
-          </Select>
-          &emsp;
-          <TextField 
-            label="Time in Minutes" error={timeError} onChange={handleTimeChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-          <br /><br />
-          <TextField 
-            label="Meal Type" onChange={handleMealTypeChange}
-            style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel />
-        </div>
+          </Paper>
+        </Stack>
 
         <div>
           <hr /><br />
