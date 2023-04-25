@@ -104,7 +104,7 @@ const AddPage = () => {
 
       return (
         <TextField key={i} label={uLabel} onChange={(event) => handleUtensilChange(event.target.value, i)}
-          variant="outlined" hiddenLabel />
+          color="secondary" variant="outlined" hiddenLabel />
       )
     })
     
@@ -126,6 +126,7 @@ const AddPage = () => {
                   {...params}
                   label={iLabel}
                   variant="outlined" hiddenLabel
+                  color = "secondary"
                   placeholder="Type an ingredient"
                 />
               )}
@@ -135,6 +136,7 @@ const AddPage = () => {
             <TextField 
               fullWidth
               label={dLabel} onChange={(event) => handleDetailChange(event.target.value, i)}
+              color="secondary"
               variant="outlined" hiddenLabel />
           </Grid>
         </Grid>
@@ -286,12 +288,13 @@ const AddPage = () => {
             <Typography variant='h3'>Add a New Recipe</Typography>
             <TextField 
               label="Title" onChange={handleTitleChange}
-              style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel required />
+              style={{flex:'auto', marginRight:'4px'}} variant="outlined" color="secondary" hiddenLabel required />
             <Stack direction='row' spacing={3}>
               <FormControl>
                 <InputLabel>Energy</InputLabel>
                 <Select 
                   className='energySelect' label="Energy"
+                  color = "secondary"
                   value={energy} 
                   onChange={handleEnergyChange} >
                     {energyLevels.map((item, i)=>{
@@ -301,12 +304,14 @@ const AddPage = () => {
               </FormControl>
               <TextField 
                 label="Time in Minutes" error={timeError} onChange={handleTimeChange}
+                color = "secondary"
                 variant="outlined" style={{width:"15ch"}} hiddenLabel />
               <FormControl>
                 <InputLabel>Meal Type</InputLabel>
                 <Select 
                   className='mealSelect' label="Meal Type"
                   value={mealType} 
+                  color = "secondary"
                   onChange={handleMealTypeChange} >
                     {mealTypes.map((item, i)=>{
                       return <MenuItem key={i} value={item.value}>{item.display}</MenuItem>
@@ -409,6 +414,7 @@ const AddPage = () => {
             <Grid item xs={11} sm={10} md={8}>
               <TextField 
                 label="Directions" onChange={handleDirectionsChange}
+                color="secondary"
                 minRows={4} variant="outlined" hiddenLabel fullWidth multiline />
             </Grid>
           </Grid>
