@@ -311,6 +311,7 @@ const EditPage = () => {
     const [alertOpen, setAlertOpen] = React.useState(false);
   
     const handleSuccessClick = () => {
+      handleSave();
       setSuccessOpen(true);
     };
   
