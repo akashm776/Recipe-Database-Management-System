@@ -171,7 +171,7 @@ def edit_recipe():
             filename = ''.join(random.choices(list(alphanumeric), k=16)) + "." + file_extension
             path = IMAGE_DIR+filename
         
-        #image.save(path)
+        image.save(path)
         print(f"file saved to {path}")
 
         data["image_path"] = "/images/"+filename # remember we need the relative path from inside the public directory

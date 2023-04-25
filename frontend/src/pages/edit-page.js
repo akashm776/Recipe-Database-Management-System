@@ -54,6 +54,7 @@ const EditPage = () => {
     const [ingredientsActive, setIngredientsActive] = useState([Array(maxIngredients).map((a, i) => boxLogicInit(i))]);
     const [nextIngredient, setNextIngredient] = useState(1);
     const [fileValue, setFileValue] = useState(''); // this is used so we have ability to clear the image
+    const [oldImagePath, setOldImagePath] = useState("");
 
     let currentRecipe;
     
@@ -135,7 +136,8 @@ const EditPage = () => {
         loadUtensils(currentRecipe.utensils);
         setTime(currentRecipe.time_mins);
         setDirections(currentRecipe.instructions);
-        loadImage(currentRecipe.image_path);
+        setImagePreview(currentRecipe.image_path);
+        setOldImagePath(currentRecipe.image_path);
         console.log("editing recipe: " + currentRecipe.name);
       })
     }
@@ -149,15 +151,6 @@ const EditPage = () => {
       }
       setNextUtensil(utensilsToLoad.length - 1);
       
-    }
-
-    function loadImage(imagePath) {
-      let localImage = new Image();
-      localImage.src = imagePath; // I doubt this will work when saving to database
-      console.log("Loaded server image:");
-      console.log(localImage);
-      setCurrentImage(localImage);
-      setImagePreview(imagePath);
     }
 
     function handleSuccessfulEdit() {
@@ -242,6 +235,11 @@ const EditPage = () => {
       if (typeof(directions) === "string" && directions.length > 0) {
         recipeObj.instructions = directions;
       } 
+
+      // add image path (if no new image provided)
+      if (!currentImage) {
+        recipeObj.image_path = oldImagePath;
+      }
 
       console.log(JSON.stringify(recipeObj));
       // addRecipe(JSON.stringify(recipeObj));
