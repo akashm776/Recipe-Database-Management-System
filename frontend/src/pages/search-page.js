@@ -3,9 +3,9 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton, Stack, Paper, Box } from '@mui/material';
+import { Autocomplete, Button, Card, CardContent, CardHeader, CardMedia, Checkbox, FormControlLabel, Drawer, ListItem, ListItemIcon, ListItemText, Grid, MenuItem, Select, Typography, IconButton, Stack, Paper, Box, InputAdornment } from '@mui/material';
 import { Container } from '@mui/system';
-import {Add, Search, DensityMedium, HomeOutlined} from "@mui/icons-material";
+import {Add, Search, DensityMedium, HomeOutlined, Fastfood, FastfoodOutlined, FastfoodRounded, FastfoodSharp, FastfoodTwoTone} from "@mui/icons-material";
 
 
 // value: value stored in database
@@ -31,22 +31,24 @@ function ResultList({ results, cardLink }) {
           return (
             // <Grid key={index} item xs={2} sm={6} md={6} lg={4}>
             <Grid item key={index}>
-              <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385,
-                  maxWidth : 385, minHeight : 285, maxHeight : 285 }}
-                  variant='outlined' onClick={() => cardLink(recipe._id)}>
-                <CardHeader title={recipe.name} titleTypographyProps={{variant : 'h6'}}/>
-                <CardMedia 
-                  sx={{height:150}}
-                  image={recipe['image_path']!==undefined ? recipe['image_path'] : "/istockphoto-612x612.jpg"}
-                />
-                <CardContent>
-                  <Typography variant='body2' color='text.secondary'>
-                    Energy Level: {recipe.energy.charAt(0).toUpperCase() + recipe.energy.slice(1)}
-                    <br></br>
-                    Total Time to Cook (in mins): {recipe.time_mins}
-                  </Typography>
-                </CardContent>
-              </Card>
+              <Box border={3} borderColor='#1de9b6' borderRadius={1}>
+                <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385,
+                    maxWidth : 385, minHeight : 285, maxHeight : 285 }}
+                    variant='outlined' onClick={() => cardLink(recipe._id)}>
+                  <CardHeader title={recipe.name} titleTypographyProps={{variant : 'h6'}}/>
+                  <CardMedia 
+                    sx={{height:150}}
+                    image={recipe['image_path']!==undefined ? recipe['image_path'] : "/istockphoto-612x612.jpg"}
+                  />
+                  <CardContent>
+                    <Typography variant='body2' color='text.secondary'>
+                      Energy Level: {recipe.energy.charAt(0).toUpperCase() + recipe.energy.slice(1)}
+                      <br></br>
+                      Total Time to Cook (in mins): {recipe.time_mins}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Box>
             </Grid>
           )
         })}
@@ -240,14 +242,21 @@ const SearchPage = () => {
     :(
     <div className="App">
       <div className="searchRow" style={{display:'flex', margin:'12px'}}>
-        <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}><IconButton><DensityMedium/></IconButton></Button>
+        <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}><IconButton><DensityMedium style={{color: '#1de9b6'}}/></IconButton></Button>
         <Drawer open={drawerOpen} anchor={"left"} onClose={() => setDrawerOpen(false)}>
           {getDrawerList()}
         </Drawer>
         <TextField 
           className="searchbar" label="Search for a Recipe" 
           onChange={(event)=>setSearchBarText(event.target.value)} onKeyDown={handleKeyDown} 
-          style={{flex:'auto', marginRight:'4px'}} variant="outlined" hiddenLabel fullWidth autoFocus />
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Fastfood fontSize='large' style={{ color: '#1de9b6' }}/>
+              </InputAdornment>
+            ),
+          }}
+          style={{flex:'auto', marginRight:'4px'}} variant="outlined" color="secondary" hiddenLabel fullWidth autoFocus />
         {/* <Button 
           className='searchButton' 
           onClick={()=>{search()}} 
@@ -256,6 +265,7 @@ const SearchPage = () => {
         </Button> */}
         <Select 
           className='sortSelect' label="Sort by"
+          color='secondary'
           value={sortBy}
           onChange={(event)=>setSortBy(event.target.value)} >
             <MenuItem value="alphabetical">Alphabetical</MenuItem>
@@ -278,6 +288,7 @@ const SearchPage = () => {
                 {...params}
                 label="Included Ingredients"
                 placeholder="Type an ingredient"
+                color="secondary"
               />
             )}
           />
@@ -293,6 +304,7 @@ const SearchPage = () => {
                 {...params}
                 label="Excluded Ingredients"
                 placeholder="Type an ingredient"
+                color="secondary"
               />
             )}
           />
@@ -303,6 +315,7 @@ const SearchPage = () => {
               onChange={(event)=>handleTimeChange(event, 'min')}
               error={minTimeError}
               fullWidth
+              color="secondary"
               variant="outlined" />
             <Typography variant="h4"> - </Typography>
             <TextField 
@@ -310,6 +323,7 @@ const SearchPage = () => {
               onChange={(event)=>handleTimeChange(event, 'max')}
               error={maxTimeError}
               fullWidth
+              color="secondary"
               variant="outlined" />
           </Stack>
         </Stack>
