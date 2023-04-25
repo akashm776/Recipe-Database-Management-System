@@ -6,6 +6,9 @@ import MuiAlert from "@mui/material/Alert";
 import {Add, DinnerDining, Search, DensityMedium, Delete, Save} from "@mui/icons-material";
 import ClearIcon from '@mui/icons-material/Clear';
 import { Box } from '@mui/system';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 
 const energyLevels = [
@@ -92,6 +95,7 @@ const EditPage = () => {
     const [details, setDetails] = useState([""]);
     const [fileValue, setFileValue] = useState(''); // this is used so we have ability to clear the image
     const [oldImagePath, setOldImagePath] = useState("");
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     useEffect(()=>loadIngredients(setDBIngredients), []) // this function will only be called on initial page load
 
@@ -400,13 +404,26 @@ const EditPage = () => {
   
       setSuccessOpen(false);
     };
-  
+    
+    const handleDialogOpen = () => {
+      setDialogOpen(true);
+    }
+
+    const handleDialogClose = () => {
+      setDialogOpen(false);
+    }
+
+    const handleDelete = () => {
+      setDialogOpen(false);
+      handleAlertClick();
+    }
+
     const handleAlertClick = () => {
+      deleteRecipe(linkRecipeId);
       setAlertOpen(true);
     };
   
     const handleAlertClose = (event, reason) => {
-      deleteRecipe(linkRecipeId)
       if (reason === "clickaway") {
         return;
       }
@@ -419,6 +436,22 @@ const EditPage = () => {
     :(
       <div className="App">
         <RunOnLoad />
+        <Dialog
+            open={dialogOpen}
+            onClose={handleDialogClose} >
+          <DialogTitle>
+            Are you sure you want to delete this recipe?
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={handleDialogClose} variant="contained" color="success">
+              Nevermind
+            </Button>
+            <Button onClick={handleDelete} variant="contained" color="error" 
+                startIcon={<Delete />} >
+              Yes, delete it!
+            </Button>
+          </DialogActions>
+        </Dialog>
         <div className="searchRow" style={{display:'flex', margin:'12px'}}>
           <Button className="sideBarButton" onClick={() => setDrawerOpen(true)}>
             <IconButton><DensityMedium/></IconButton>
@@ -582,7 +615,7 @@ const EditPage = () => {
               variant="contained"
               color="error"
               startIcon={<Delete />}
-              onClick={handleAlertClick} >
+              onClick={handleDialogOpen} >
             Delete Recipe
           </Button>
           <Snackbar open={alertOpen} autoHideDuration={3000} onClose={handleAlertClose}>
