@@ -68,6 +68,7 @@ const AddPage = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const [timeError, setTimeError] = useState(false);
     const [title, setTitle] = useState(null);
     const [energy, setEnergy] = useState(energyLevels[0].value);
     const [time, setTime] = useState(0);
@@ -230,7 +231,6 @@ const AddPage = () => {
       setEnergy(event.target.value);
     }
 
-    const [timeError, setTimeError] = useState(false);
 
     function handleTimeChange(event) {
       let num = Number(event.target.value);
