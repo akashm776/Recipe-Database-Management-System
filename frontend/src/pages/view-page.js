@@ -70,18 +70,34 @@ const ViewPage = () => {
         setRecEnergy(currentRecipe.energy);
         setRecTime(currentRecipe.time_mins);
         setRecType(currentRecipe.meal_type);
-        setRecViews(currentRecipe.views);
+        setRecViews(currentRecipe.views + 1);
         setRecUtensils(currentRecipe.utensils);
         currentRecipe.ingredients.forEach(element => console.log("ingredient: " + String(element.name) +  "\t" + "details: " + String(element.notes)));
         setRecIngredients(currentRecipe.ingredients);
         setRecDirections(currentRecipe.instructions);
         setRecImage(currentRecipe.image_path);
         console.log("viewing recipe: " + currentRecipe.name);
+        incrementViews(state.rid["linkRecipeId"], currentRecipe.views);
       })
     }
 
-    function parseDirections(directions) {
-      
+    function incrementViews(recipeId, oldViews) {
+      axios({
+        method: 'POST',
+        url: 'incrementviews',
+        data: {
+          rid: recipeId,
+          views: oldViews
+        }
+      }).then((response) => {
+        // If response.data is 1, success! If 0, failure :pensive:
+        const success = response.data;
+        if (success === 1) {
+          console.log("view count updated");
+        } else {
+          console.log("view count update was unsuccessful");
+        }
+      })
     }
 
     function titleCase(str) {
