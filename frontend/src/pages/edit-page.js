@@ -11,8 +11,23 @@ const maxUtensils = 100;
 const maxIngredients = 100;
 const imageDir = "../frontend/public/images/";
 
-function addRecipe() {
-  
+function addRecipe(image, recipe) {
+  let formdata = new FormData();
+  if (image !== null) {
+    formdata.append("image", image);
+  }
+
+  // images need to use formdata, which don't mix with the data section
+  // so we just add the string into the formdata
+  formdata.append("data", JSON.stringify(recipe));
+
+  axios.post("editrecipe",formdata, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    }
+  }).then((response)=>{
+    console.log(response.data);
+  });
 }
 
 const EditPage = () => {
@@ -202,6 +217,7 @@ const EditPage = () => {
         }
       }
       const recipeObj = {
+        _id: state.rid,
         name: title,
         energy: energy,
         utensils: uArray,

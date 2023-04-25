@@ -144,3 +144,40 @@ def new_recipe():
         "results": str(insert_result.inserted_id)
     }
     return str(insert_result.inserted_id)
+
+
+@app.route("/editrecipe", methods=["POST"])
+def edit_recipe():
+    data = json.loads(request.form['data'])
+
+    print(data)
+    # TODO verify dictionary keys before blindly inserting them
+
+    if 'image' in request.files.keys():
+        image = request.files['image']
+
+        filename = secure_filename(image.filename)
+        path = IMAGE_DIR+filename
+
+        if filename == "": # secure_filename can return empty string in worst case
+            return "Bad filename"
+
+        while os.path.exists(path):
+            # make up random filename
+            file_extension = filename.split('.')[-1]
+            alphanumeric = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+            filename = ''.join(random.choices(list(alphanumeric), k=16)) + "." + file_extension
+            path = IMAGE_DIR+filename
+        
+        image.save(path)
+        print(f"file saved to {path}")
+
+        data["image_path"] = "/images/"+filename # remember we need the relative path from inside the public directory
+
+    insert_result = recipes.update_one(data["_id"], data)
+
+    #response_body = {
+    #    "results": str(insert_result.inserted_id)
+    #}
+    return str(insert_result.inserted_id)
