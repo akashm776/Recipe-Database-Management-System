@@ -45,6 +45,7 @@ const ViewPage = () => {
     const RunOnLoad = () => {
       useEffect(() => {
         if (!pageLoaded) {
+          if (state.rid == null) { navigate("/") }
           fetchRecipe(state.rid);
           setLinkRecipeId(state.rid["linkRecipeId"]);
           setPageLoaded(true);
@@ -126,22 +127,24 @@ const ViewPage = () => {
               <img src={recImage} style={{maxWidth:'25%', height:'auto'}}/>
             </Grid>
             <Grid item>
-              <Typography variant="h2" align="center">{recName}</Typography>
+              <Typography variant="h3" align="center"><u>{recName}</u></Typography>
             </Grid>
           </Grid>
-          <h2>Energy: {recEnergy.charAt(0).toUpperCase() + recEnergy.slice(1)} <br />Time: {recTime} min
-          <br />Meal Type: {recType.charAt(0).toUpperCase() + recType.slice(1)}
-          <br /># of Views: {recViews}</h2>
+          <Typography variant='subtitle1'><b>Energy:</b> {recEnergy.charAt(0).toUpperCase() + recEnergy.slice(1)} </Typography>
+          <Typography variant='subtitle1'><b>Time:</b> {recTime} min</Typography>
+          <Typography variant='subtitle1'><b>Meal Type:</b> {recType.charAt(0).toUpperCase() + recType.slice(1)}</Typography>
+          <Typography variant='subtitle1'><b># of Views:</b> {recViews}</Typography>
           <hr />
-          <h2>Utensils: {recUtensils.map((str) => titleCase(str)).join(", ")}</h2>
-          <h2>Ingredients:</h2>
+          <Typography variant='h4'>Utensils:</Typography>
+          <Typography variant='subtitle1'>{recUtensils.map((str) => titleCase(str)).join(", ")}</Typography>
+          <Typography variant='h4'>Ingredients:</Typography>
             
           <Grid container style={{direction:'column', alignItems:'flex-start', justify:'center', textAlign:'left', display:'inline-block'}}>
           
             <Grid item>
             <ul style={{listStylePosition:'outside', margin:"auto", textAlign:"justify", verticalAlign:"middle", position: 'relative', display:'table'}}>
               {recIngredients.map((ingredient) => (
-                <Grid item> <li>{ingredient.name} &rarr; {ingredient.notes}</li> </Grid>
+                <Grid item> <li><Typography variant='subtitle1'>{ingredient.name} &rarr; {ingredient.notes}</Typography></li> </Grid>
               ))}
             </ul>
             </Grid>
@@ -149,11 +152,11 @@ const ViewPage = () => {
           </Grid>
 
           <hr />
-          <h2>Directions:</h2>
+          <Typography variant='h4'>Directions:</Typography>
 
             <ul style={{listStylePosition:'inside', margin:"auto", textAlign:"justify", verticalAlign:"middle", display:'inline-block', listStyleType:'none'}}>
                 {recDirections.split("\n").map((instruction) => (
-                  <li>{instruction}</li>
+                  <li><Typography variant='subtitle1'>{instruction}</Typography></li>
                 ))}
             </ul>
             <hr />     
