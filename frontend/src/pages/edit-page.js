@@ -96,6 +96,7 @@ const EditPage = () => {
     const [fileValue, setFileValue] = useState(''); // this is used so we have ability to clear the image
     const [oldImagePath, setOldImagePath] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [views, setViews] = useState(null);
 
     useEffect(()=>loadIngredients(setDBIngredients), []) // this function will only be called on initial page load
 
@@ -195,6 +196,7 @@ const EditPage = () => {
         setDirections(currentRecipe.instructions);
         setImagePreview(currentRecipe.image_path);
         setOldImagePath(currentRecipe.image_path);
+        setViews(currentRecipe.views);
         console.log("editing recipe: " + currentRecipe.name);
       })
     }
@@ -285,7 +287,7 @@ const EditPage = () => {
         energy: energy,
         utensils: uArray,
         ingredients: iArray,
-        views: 0,
+        views: views - 1,
         date_added: Date.now(),
         instructions: "",
       };
