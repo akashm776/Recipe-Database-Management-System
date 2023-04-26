@@ -31,10 +31,10 @@ function ResultList({ results, cardLink }) {
           return (
             // <Grid key={index} item xs={2} sm={6} md={6} lg={4}>
             <Grid item key={index}>
-              <Box border={3} borderColor='#1de9b6' borderRadius={1}>
+              <Box borderRadius={1}>
                 <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385,
                     maxWidth : 385, minHeight : 285, maxHeight : 285 }}
-                    variant='outlined' onClick={() => cardLink(recipe._id)}>
+                    variant='outlined' onClick={() => cardLink(recipe._id)} class="border-gradient border-gradient-purple">
                   <CardHeader title={recipe.name} titleTypographyProps={{variant : 'h6'}}/>
                   <CardMedia 
                     sx={{height:150}}

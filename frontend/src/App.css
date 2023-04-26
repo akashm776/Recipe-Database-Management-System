@@ -42,3 +42,16 @@
   float: left;
   /* display: inline-block; */
 }
+
+.border-gradient {
+  border: 10px solid;
+  border-image-slice: 1;
+  border-width: 5px;
+}
+.border-gradient-purple {
+  border-image-source: linear-gradient(to left, #743ad5, #1de9b6);
+}
+
+/* body {
+  background-color: whitesmoke;
+} */
