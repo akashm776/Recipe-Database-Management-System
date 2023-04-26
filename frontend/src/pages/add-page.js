@@ -168,7 +168,7 @@ const AddPage = () => {
       // currently Title is the only mandatory info
       if (typeof(title) !== "string" || title.length === 0) {
         alert("Please enter a recipe title");
-        return;
+        return false;
       }
 
       // array of all listed utensils in order.
@@ -223,6 +223,7 @@ const AddPage = () => {
       console.log(JSON.stringify(recipeObj));
       // addRecipe(JSON.stringify(recipeObj));
       addRecipe(currentImage, recipeObj, setLinkRecipeId);
+      return true;
     }
 
     function addUtensil() {
@@ -285,8 +286,9 @@ const AddPage = () => {
     });
     
     const handleSuccessClick = () => {
-      handleSave();
-      setSuccessOpen(true);
+      if (handleSave()) {
+        setSuccessOpen(true);
+      }
     };
 
     const handleSuccessClose = (event, reason) => {
