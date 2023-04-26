@@ -2,6 +2,11 @@ from pymongo import MongoClient
 import time
 
 def reset_db():
+    if input("type YES to clear and repopulate the database (this is irreversible): ") != "YES":
+        print("aborted")
+        return
+    print("clearing database...")
+    
     client = MongoClient('localhost', 27017)
     db = client['recipe_db']
     recipes = db['recipes']
