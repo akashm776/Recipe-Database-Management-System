@@ -130,10 +130,10 @@ const ViewPage = () => {
               <Typography variant="h3" align="center">{recName}</Typography>
             </Grid>
           </Grid>
-          <Typography variant='subtitle1'>Energy: {recEnergy.charAt(0).toUpperCase() + recEnergy.slice(1)} </Typography>
-          <Typography variant='subtitle1'>Time: {recTime} min</Typography>
-          <Typography variant='subtitle1'>Meal Type: {recType.charAt(0).toUpperCase() + recType.slice(1)}</Typography>
-          <Typography variant='subtitle1'># of Views: {recViews}</Typography>
+          <Typography variant='subtitle1'><b>Energy:</b> {recEnergy.charAt(0).toUpperCase() + recEnergy.slice(1)} </Typography>
+          <Typography variant='subtitle1'><b>Time:</b> {recTime} min</Typography>
+          <Typography variant='subtitle1'><b>Meal Type:</b> {recType.charAt(0).toUpperCase() + recType.slice(1)}</Typography>
+          <Typography variant='subtitle1'><b># of Views:</b> {recViews}</Typography>
           <hr />
           <Typography variant='h5'>Utensils:</Typography>
           <Typography variant='subtitle1'>{recUtensils.map((str) => titleCase(str)).join(", ")}</Typography>
