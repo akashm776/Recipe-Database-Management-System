@@ -156,7 +156,7 @@ const ViewPage = () => {
 
             <ul style={{listStylePosition:'inside', margin:"auto", textAlign:"justify", verticalAlign:"middle", display:'inline-block', listStyleType:'none'}}>
                 {recDirections.split("\n").map((instruction) => (
-                  <li><Typography className='bodystyling' >{instruction}</Typography></li>
+                  <li><Typography variant='subtitle1'>{instruction}</Typography></li>
                 ))}
             </ul>
             <hr />     
