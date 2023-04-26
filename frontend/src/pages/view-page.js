@@ -135,9 +135,9 @@ const ViewPage = () => {
           <Typography variant='subtitle1'><b>Meal Type:</b> {recType.charAt(0).toUpperCase() + recType.slice(1)}</Typography>
           <Typography variant='subtitle1'><b># of Views:</b> {recViews}</Typography>
           <hr />
-          <Typography variant='h5'>Utensils:</Typography>
+          <Typography variant='h4'>Utensils:</Typography>
           <Typography variant='subtitle1'>{recUtensils.map((str) => titleCase(str)).join(", ")}</Typography>
-          <Typography variant='h5'>Ingredients:</Typography>
+          <Typography variant='h4'>Ingredients:</Typography>
             
           <Grid container style={{direction:'column', alignItems:'flex-start', justify:'center', textAlign:'left', display:'inline-block'}}>
           
