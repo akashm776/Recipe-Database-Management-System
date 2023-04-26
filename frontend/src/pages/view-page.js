@@ -127,7 +127,7 @@ const ViewPage = () => {
               <img src={recImage} style={{maxWidth:'25%', height:'auto'}}/>
             </Grid>
             <Grid item>
-              <Typography variant="h3" align="center">{recName}</Typography>
+              <Typography variant="h3" align="center"><u>{recName}</u></Typography>
             </Grid>
           </Grid>
           <Typography variant='subtitle1'><b>Energy:</b> {recEnergy.charAt(0).toUpperCase() + recEnergy.slice(1)} </Typography>
