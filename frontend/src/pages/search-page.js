@@ -29,7 +29,9 @@ function ResultList({ results, cardLink }) {
       <Grid container spacing={2} justifyContent="center" alignItems="center">
         {results.map((recipe, index) => {
           return (
+            // <Grid key={index} item xs={2} sm={6} md={6} lg={4}>
             <Grid item key={index}>
+              <Box border={3} borderRadius={1} color='#1de9b6'>
                 <Card sx={{ /* minWidth: 200, maxWidth: 400 */ minWidth : 385,
                     maxWidth : 385, minHeight : 285, maxHeight : 285 }}
                     variant='outlined' onClick={() => cardLink(recipe._id)}>
@@ -46,6 +48,7 @@ function ResultList({ results, cardLink }) {
                     </Typography>
                   </CardContent>
                 </Card>
+              </Box>
             </Grid>
           )
         })}
