@@ -10,6 +10,7 @@ import {Add, Search, DensityMedium, HomeOutlined, Fastfood, FastfoodOutlined, Fa
 
 // value: value stored in database
 // display: checkbox label
+// make sure to update this in the other pages as well
 const energyLevels = [
   {value:'easy',       display:'Easy'},
   {value:'moderate',   display:'Moderate'},
@@ -146,7 +147,6 @@ const SearchPage = () => {
   const [badEnergy, setBadEnergy] = useState([]);
   const [goodMealTypes, setGoodMealTypes] = useState([]);
   const [badMealTypes, setBadMealTypes] = useState([]);
-  const [searchedFor, setSearchedFor] = useState(""); // TODO remove if not used
   const [results, setResults] = useState([]);
   const [ingredients, setIngredients] = useState(["loading ingredients..."]);
 
@@ -159,7 +159,6 @@ const SearchPage = () => {
   },[searchBarText, sortBy, goodIngredients, badIngredients, goodEnergy, badEnergy, goodMealTypes, badMealTypes, timeRange]);
 
   function search() {
-    setSearchedFor(searchBarText)
     axios({
       method: 'POST',
       url: 'query',
@@ -182,11 +181,6 @@ const SearchPage = () => {
     })
   }
 
-  function handleKeyDown(event) { // TODO remove
-    if (event.key === "Enter") {
-      search(); 
-    }
-  }
   function handleCardLink(rid) {
     setLinkRecipeId(rid);
     setRedirect(true);
@@ -248,7 +242,7 @@ const SearchPage = () => {
         </Drawer>
         <TextField 
           className="searchbar" label="Search for a Recipe" 
-          onChange={(event)=>setSearchBarText(event.target.value)} onKeyDown={handleKeyDown} 
+          onChange={(event)=>setSearchBarText(event.target.value)} 
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -258,12 +252,6 @@ const SearchPage = () => {
           }}
           sx={{fieldset: { borderColor: '#1de9b6', borderWidth: '3px'}}}
           style={{flex:'auto', marginRight:'4px'}} variant="outlined" color="secondary" hiddenLabel fullWidth autoFocus />
-        {/* <Button 
-          className='searchButton' 
-          onClick={()=>{search()}} 
-          style={{flex:'none', marginRight:'4px'}} variant='contained' >
-            <Search />
-        </Button> */}
         <Select 
           className='sortSelect' label="Sort by"
           color='secondary'
@@ -297,7 +285,6 @@ const SearchPage = () => {
           />
           <Autocomplete
             sx={{width:"100%"}}
-            // style={{flex:'auto'}}
             value={badIngredients}
             onChange={(event, newVal) => {setBadIngredients(newVal)}}
             multiple
@@ -340,19 +327,6 @@ const SearchPage = () => {
       </Stack>
       </Box>
 
-      {/* <div className="thirdRow" style={{display:'flex', margin:'12px'}}>
-        <Select 
-          className='energySelect' label="Energy"
-          value={energy}
-          onChange={(event)=>setEnergy(event.target.value)} >
-            <MenuItem value="alphabetical">Alphabetical</MenuItem>
-            <MenuItem value="date">Date Added</MenuItem>
-            <MenuItem value="views">Views</MenuItem>
-        </Select>
-      </div> */}
-      {/* <p>PosFilter: <b>{goodEnergy}</b></p>
-      <p>NegFilter: <b>{badEnergy}</b></p> */}
-      {/* <p>Search results for: <b>{searchedFor}</b></p> */}
       <ResultList results={results} cardLink={handleCardLink}/>
     </div>
   );

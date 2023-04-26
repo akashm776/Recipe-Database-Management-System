@@ -20,8 +20,23 @@ db = client['recipe_db']
 recipes = db['recipes']
 
 
+
+
 @app.route("/query", methods=['POST'])
 def index():
+    """ 
+    This takes care of filtering and sorting
+
+    Input format:
+        data: {
+            name: string
+            sort: string ("name", "date_added", "views")
+            time_mins: int
+            ingredients: {"include":list, "exclude":list},
+            energy: {"include":list, "exclude":list},
+            meal_type: {"include":list, "exclude:list"},
+        }
+    """
     data = request.get_json()
 
     cursor = search(data)
@@ -82,22 +97,28 @@ def sort(cursor, sort):
             return cursor.sort("date_added")
         case "views":
             return cursor.sort("views", pymongo.DESCENDING)
-        case "meal_type":
-            return cursor.sort("meal_type")
-        case "time_mins":
-            return cursor.sort("time_mins")
-        case "energy":
-            return cursor.sort("energy")
     return cursor.sort("name").collation(Collation(locale= "en", caseLevel=True))
 
 
 @app.route("/ingredientlist", methods=["GET"])
 def listOfIngredients():
+    """
+    This returns all unique ingredient names in the database
+    """
     ingredients = recipes.find().distinct("ingredients.name")
     return json.dumps(ingredients)
 
 @app.route("/fetchrecipe", methods=["POST"])
 def fetchRecipe():
+    """
+    This fetches a recipe given its recipe id (rid)
+
+
+    Input format:
+        data: {
+            rid
+        }
+    """
     data = request.get_json()
     rid = data["rid"]
     recRes = recipes.find_one({"_id": ObjectId(rid["linkRecipeId"])})
@@ -111,10 +132,27 @@ def fetchRecipe():
 
 @app.route("/newrecipe", methods=["POST"])
 def new_recipe():
+    """
+    Creates a new recipe. You need to use formdata because it accepts an image
+
+    Input format:
+        image: img
+        data: {
+            name: string
+            ingredients': list of {'name': string, 'notes': string},
+            time_mins: int
+            energy: string
+            meal_type: string
+            utensils: list
+            instructions: string
+            views: int
+            date_added: int
+            image_path: string relative to public directory ex:'/images/meatball.jpg'
+        }
+    """
     data = json.loads(request.form['data'])
 
     print(data)
-    # TODO verify dictionary keys before blindly inserting them
 
     if 'image' in request.files.keys():
         image = request.files['image']
@@ -148,11 +186,29 @@ def new_recipe():
 
 @app.route("/editrecipe", methods=["POST"])
 def edit_recipe():
+    """
+    Similar to new recipe, but needs recipe id
+
+    Input format:
+        image: img
+        data: {
+            _id: int
+            name: string
+            ingredients': list of {'name': string, 'notes': string},
+            time_mins: int
+            energy: string
+            meal_type: string
+            utensils: list
+            instructions: string
+            views: int
+            date_added: int
+            image_path: string relative to public directory ex:'/images/meatball.jpg'
+        }
+    """
     data = json.loads(request.form['data'])
     
     data["_id"] = ObjectId(data["_id"]["linkRecipeId"])
     print(data)
-    # TODO verify dictionary keys before blindly inserting them
 
     if 'image' in request.files.keys():
         image = request.files['image']
