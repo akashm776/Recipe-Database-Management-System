@@ -58,12 +58,12 @@ def search(data):
         search_filters.append({"ingredients.name":{"$nin": data["ingredients"]["exclude"]}})
 
     if len(data["energy"]["include"]) > 0:
-        search_filters.append({"energy":{"$in": data["energy"]["include"]}})
+        search_filters.append({"energy":{"$all": data["energy"]["include"]}})
     if len(data["energy"]["exclude"]) > 0:
         search_filters.append({"energy":{"$nin": data["energy"]["exclude"]}})
 
     if len(data["meal_type"]["include"]) > 0:
-        search_filters.append({"meal_type":{"$in": data["meal_type"]["include"]}})
+        search_filters.append({"meal_type":{"$all": data["meal_type"]["include"]}})
     if len(data["meal_type"]["exclude"]) > 0:
         search_filters.append({"meal_type":{"$nin": data["meal_type"]["exclude"]}})
 
@@ -184,30 +184,3 @@ def edit_recipe():
                "\nNumber of documents modified: " + str(insert_result.modified_count))
     
     return str(insert_result.modified_count)
-
-@app.route("/incrementviews", methods=["POST"])
-def increment_views():
-    data = request.get_json()
-    rid = ObjectId(data["rid"])
-    old_views = data["views"]
-    new_views = old_views + 1
-    
-    view_result = recipes.update_one({'_id': rid}, {'$set': {'views': new_views}}, upsert=False)
-    print("Number of matches: " + str(view_result.matched_count) +
-               "\nNumber of documents modified: " + str(view_result.modified_count))
-    
-    return str(view_result.modified_count)
-
-@app.route("/deleterecipe", methods=["POST"])
-def delete_reciepe():
-    data = request.get_json()
-    #data["_id"] = ObjectId(data["_id"]["linkRecipeId"])
-    rid = ObjectId(data["rid"])
-
-    delete_result = recipes.delete_one({'_id': rid})
-
-    response_body = {
-        "results": str(delete_result.deleted_count)
-    }
-    return str(delete_result.deleted_count)
-    
