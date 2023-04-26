@@ -184,3 +184,16 @@ def edit_recipe():
                "\nNumber of documents modified: " + str(insert_result.modified_count))
     
     return str(insert_result.modified_count)
+
+@app.route("/deleterecipe", methods=["POST"])
+def delete_reciepe():
+    data = request.get_json()
+    #data["_id"] = ObjectId(data["_id"]["linkRecipeId"])
+    rid = ObjectId(data["rid"])
+
+    delete_result = recipes.delete_one({'_id': rid})
+
+    response_body = {
+        "results": str(delete_result.deleted_count)
+    }
+    return str(delete_result.deleted_count)
