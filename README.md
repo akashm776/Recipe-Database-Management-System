@@ -1,8 +1,5 @@
 # ByteBox Recipe App
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
 ## Installation
 
 Tested on Python 3.10.9
@@ -18,7 +15,7 @@ Tested on Python 3.10.9
     On Windows using Command Prompt: `path\to\venv\Scripts\activate.bat`\
     On Windows using PowerShell: `path\to\venv\Scripts\Activate.ps1`
 
-2. Install dependencies
+2. Install python dependencies
  
 ```
 pip install flask
@@ -47,7 +44,8 @@ You can also run it as daemon in the commandline using `mongod`
 
 
 ## Usage
-1. Open the project in a terminal
+1. run `mongod` in a terminal
+1. Open another terminal and navigate to the project
 1. `cd backend`
 2. `source venv/bin/activate` (If you're using a virtual environment)
 3. `python -m flask run` to launch the backend
@@ -56,5 +54,3 @@ You can also run it as daemon in the commandline using `mongod`
 6. `npm start`
 7. Navigate to "http://localhost:3000" in your web browser
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
