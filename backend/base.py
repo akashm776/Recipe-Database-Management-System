@@ -185,6 +185,19 @@ def edit_recipe():
     
     return str(insert_result.modified_count)
 
+@app.route("/incrementviews", methods=["POST"])
+def increment_views():
+    data = request.get_json()
+    rid = ObjectId(data["rid"])
+    old_views = data["views"]
+    new_views = old_views + 1
+    
+    view_result = recipes.update_one({'_id': rid}, {'$set': {'views': new_views}}, upsert=False)
+    print("Number of matches: " + str(view_result.matched_count) +
+               "\nNumber of documents modified: " + str(view_result.modified_count))
+    
+    return str(view_result.modified_count)
+
 @app.route("/deleterecipe", methods=["POST"])
 def delete_reciepe():
     data = request.get_json()
