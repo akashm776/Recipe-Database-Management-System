@@ -10,7 +10,7 @@ import json
 import pymongo
 
 from reset_db import reset_db 
-# reset_db() # this will clear entries in the db and load a few presets
+reset_db() # this will clear entries in the db and load a few presets
 
 IMAGE_DIR = "../frontend/public/images/" # trailing / is required
 
