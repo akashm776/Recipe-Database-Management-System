@@ -256,6 +256,7 @@ const SearchPage = () => {
               </InputAdornment>
             ),
           }}
+          sx={{fieldset: { borderColor: '#1de9b6', borderWidth: '3px'}}}
           style={{flex:'auto', marginRight:'4px'}} variant="outlined" color="secondary" hiddenLabel fullWidth autoFocus />
         {/* <Button 
           className='searchButton' 
@@ -267,6 +268,7 @@ const SearchPage = () => {
           className='sortSelect' label="Sort by"
           color='secondary'
           value={sortBy}
+          sx={{fieldset: { borderColor: '#1de9b6', borderWidth: '3px'}}}
           onChange={(event)=>setSortBy(event.target.value)} >
             <MenuItem value="alphabetical">Alphabetical</MenuItem>
             <MenuItem value="date">Date Added</MenuItem>
@@ -289,6 +291,7 @@ const SearchPage = () => {
                 label="Included Ingredients"
                 placeholder="Type an ingredient"
                 color="secondary"
+                sx={{fieldset: { borderColor: '#1de9b6', borderWidth: '3px'}}}
               />
             )}
           />
@@ -305,6 +308,7 @@ const SearchPage = () => {
                 label="Excluded Ingredients"
                 placeholder="Type an ingredient"
                 color="secondary"
+                sx={{fieldset: { borderColor: '#1de9b6', borderWidth: '3px'}}}
               />
             )}
           />
@@ -316,6 +320,7 @@ const SearchPage = () => {
               error={minTimeError}
               fullWidth
               color="secondary"
+              sx={{fieldset: { borderColor: '#1de9b6', borderWidth: '3px'}}}
               variant="outlined" />
             <Typography variant="h4"> - </Typography>
             <TextField 
@@ -324,6 +329,7 @@ const SearchPage = () => {
               error={maxTimeError}
               fullWidth
               color="secondary"
+              sx={{fieldset: { borderColor: '#1de9b6', borderWidth: '3px'}}}
               variant="outlined" />
           </Stack>
         </Stack>
